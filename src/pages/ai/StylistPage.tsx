@@ -1,0 +1,4 @@
+import { AiChatPanel } from '../../components/ai/AiChatPanel';
+import { wardrobeItems } from '../../data/atelier';
+import { WardrobeCard } from '../../components/atelier/WardrobeCard';
+export function StylistPage() { return <div className="ai-workspace"><aside className="ai-context"><p className="eyebrow">Style profile</p><h2>Alex&apos;s language</h2><div className="profile-tags"><span>Avant-garde</span><span>Minimalist</span><span>Monochrome</span></div><p>Structured silhouettes with a quiet, precise palette.</p></aside><AiChatPanel /><aside className="ai-wardrobe"><p className="eyebrow">Digital wardrobe</p><h2>Use a piece</h2>{wardrobeItems.slice(0, 2).map((item) => <WardrobeCard key={item.name} {...item} />)}</aside></div>; }

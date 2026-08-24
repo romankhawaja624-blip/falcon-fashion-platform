@@ -1,0 +1,2 @@
+import type { CheckoutStep } from '../../features/checkout/CheckoutContext';
+export function CheckoutProgress({ current }: { current: CheckoutStep }) { const steps: CheckoutStep[] = ['shipping', 'payment', 'review']; return <nav className="checkout-progress" aria-label="Checkout progress">{steps.map((step, index) => <span className={steps.indexOf(current) >= index ? 'checkout-progress__step checkout-progress__step--active' : 'checkout-progress__step'} key={step}><b>{index + 1}</b>{step}</span>)}</nav>; }

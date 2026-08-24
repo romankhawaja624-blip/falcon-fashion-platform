@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+import { AiEntryCard } from '../../components/ai/AiEntryCard';
+import { MetricWidget } from '../../components/atelier/MetricWidget';
+import { ProductRail } from '../../components/product/ProductRail';
+import { products } from '../../data/products';
+export function DashboardPage() { return <div className="atelier-page dashboard-page"><header className="atelier-page-heading"><div><p className="eyebrow">My Atelier</p><h1>Welcome back,<br />Alex.</h1></div><Link className="text-link" to="/atelier/settings">Settings -&gt;</Link></header><section className="dashboard-grid"><article className="active-order-widget"><p className="eyebrow">Active order</p><h2>1 in transit</h2><p>The Obsidian Wool Coat</p><div className="progress-line"><span /></div><small>Arriving 28 August</small></article><MetricWidget label="Wardrobe" value="42" detail="Items" /><MetricWidget label="Style score" value="72" detail="Intelligence level" tone="blue" /><AiEntryCard /></section><div className="dashboard-rail"><ProductRail title="Your considered edit" description="Selected from your wardrobe and style profile." products={products} /></div></div>; }

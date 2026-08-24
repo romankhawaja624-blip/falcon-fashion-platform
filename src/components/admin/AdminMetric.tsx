@@ -1,0 +1,1 @@
+export function AdminMetric({ label, value, detail, tone = 'default' }: { label: string; value: string; detail: string; tone?: 'default' | 'blue' }) { return <article className={`admin-metric admin-metric--${tone}`}><p>{label}</p><strong>{value}</strong><span>{detail}</span></article>; }

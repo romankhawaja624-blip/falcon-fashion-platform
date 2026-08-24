@@ -1,0 +1,3 @@
+import { Heart } from 'lucide-react';
+import { RemoteImage } from '../ui/RemoteImage';
+export function WardrobeCard({ name, category, imageId }: { name: string; category: string; imageId: string }) { return <article className="wardrobe-card"><div className="wardrobe-card__image"><RemoteImage assetId={imageId} /><button className="icon-button" type="button" aria-label={`Save ${name}`}><Heart size={17} aria-hidden="true" /></button></div><h2>{name}</h2><p>{category}</p></article>; }

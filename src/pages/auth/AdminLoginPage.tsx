@@ -1,0 +1,4 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { AuthForm } from '../../components/auth/AuthForm';
+export function AdminLoginPage() { const [submitted, setSubmitted] = useState(false); return <><div className="auth-heading"><p className="eyebrow">Falcon operations</p><h1>Secure access.</h1><p>Sign in to the protected atelier workspace.</p></div><div className="security-indicator"><span />Encrypted session ready</div>{submitted && <p className="auth-success" role="status">Demo credentials accepted.</p>}<AuthForm fields={[{ name: 'email', label: 'Admin email', type: 'email', autoComplete: 'username' }, { name: 'password', label: 'Password', type: 'password', autoComplete: 'current-password' }]} submitLabel="Enter workspace" onSubmit={() => setSubmitted(true)} /><Link className="auth-help" to="/">Return to Falcon storefront</Link></>; }

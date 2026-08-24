@@ -1,0 +1,2 @@
+type Column<T> = { key: keyof T; label: string };
+export function AdminTable<T extends { [key: string]: unknown }>({ columns, rows }: { columns: Column<T>[]; rows: T[] }) { return <div className="admin-table-wrap"><table className="admin-table"><thead><tr>{columns.map((column) => <th key={String(column.key)} scope="col">{column.label}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={String(row.id ?? row.sku ?? row.email ?? index)}>{columns.map((column) => <td key={String(column.key)}>{String(row[column.key])}</td>)}</tr>)}</tbody></table></div>; }

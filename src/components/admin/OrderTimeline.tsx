@@ -1,0 +1,2 @@
+const stages = ['Order placed', 'In preparation', 'Quality check', 'With carrier'];
+export function OrderTimeline() { return <ol className="admin-timeline">{stages.map((stage, index) => <li className={index < 2 ? 'admin-timeline__active' : ''} key={stage}><b>0{index + 1}</b><span>{stage}</span><small>{index < 2 ? 'Complete' : 'Pending'}</small></li>)}</ol>; }

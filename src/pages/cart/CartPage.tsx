@@ -1,0 +1,6 @@
+import { Link } from 'react-router-dom';
+import { CartItemRow } from '../../components/cart/CartItemRow';
+import { OrderSummary } from '../../components/checkout/OrderSummary';
+import { useCart } from '../../features/cart/CartContext';
+
+export function CartPage() { const { items } = useCart(); return <main className="flow-page cart-page container" aria-labelledby="cart-title"><div className="flow-heading"><p className="eyebrow">Your atelier</p><h1 id="cart-title">Your cart</h1><p>Pieces held for your consideration.</p></div>{items.length ? <div className="cart-layout"><section className="cart-items" aria-label="Cart items">{items.map((item) => <CartItemRow item={item} key={item.id} />)}</section><div className="cart-summary"><OrderSummary /><Link className="button button--primary" to="/checkout">Secure checkout</Link></div></div> : <div className="empty-cart"><p className="eyebrow">Nothing selected</p><h2>Your cart is waiting.</h2><p>Return to the atelier when a piece speaks to you.</p><Link className="button button--secondary" to="/shop">Continue shopping</Link></div>}</main>; }

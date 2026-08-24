@@ -1,0 +1,5 @@
+import { Link } from 'react-router-dom';
+import { AdminTable } from '../../components/admin/AdminTable';
+import { adminProducts } from '../../data/admin';
+const columns = [{ key: 'sku', label: 'SKU' }, { key: 'name', label: 'Product' }, { key: 'category', label: 'Category' }, { key: 'stock', label: 'Stock' }, { key: 'status', label: 'Status' }, { key: 'price', label: 'Price' }] as const;
+export function AdminCatalogPage() { return <div className="admin-page"><header className="admin-page-heading"><div><p className="eyebrow">Catalog management</p><h1>Product catalog.</h1><p>Manage the pieces presented across the digital atelier.</p></div><Link className="button button--primary" to="/admin/products/new">Add product</Link></header><div className="admin-toolbar"><input aria-label="Search products" placeholder="Search catalog" /><div className="filter-group"><button className="filter-chip filter-chip--active" type="button">All products</button><button className="filter-chip" type="button">Low stock</button><button className="filter-chip" type="button">Drafts</button></div></div><AdminTable columns={columns as never} rows={adminProducts as never} /></div>; }

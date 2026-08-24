@@ -1,0 +1,1 @@
+export function MetricWidget({ label, value, detail, tone = 'default' }: { label: string; value: string; detail: string; tone?: 'default' | 'blue' }) { return <article className={`metric-widget metric-widget--${tone}`}><p className="eyebrow">{label}</p><strong>{value}</strong><span>{detail}</span></article>; }
