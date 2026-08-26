@@ -1,7 +1,8 @@
-import { Menu, ShoppingBag, UserRound, X } from 'lucide-react';
+import { Menu, ShoppingBag, UserRound, X, Bell } from 'lucide-react';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useCart } from '../../features/cart/CartContext';
+import { useNotifications } from '../../features/notifications/NotificationContext';
 
 const links = [
   { label: 'Collections', to: '/collections/women' },
@@ -14,6 +15,8 @@ const links = [
 export function PublicHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const { itemCount } = useCart();
+  const { notifications } = useNotifications();
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
     <header className="public-header">
@@ -25,6 +28,10 @@ export function PublicHeader() {
         <div className="public-header__actions">
           <Link className="header-action header-action--account" to="/sign-in"><UserRound size={16} aria-hidden="true" /><span>Account</span></Link>
           <Link className="header-action header-action--bag" to="/cart" aria-label={`Shopping bag${itemCount ? `, ${itemCount} items` : ''}`}><ShoppingBag size={18} aria-hidden="true" />{itemCount > 0 && <span className="cart-count">{itemCount}</span>}</Link>
+          <Link className="header-action header-action--notifications" to="/notifications" aria-label="Notifications">
+            <Bell size={20} aria-hidden="true" />
+            {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+          </Link>
           <Link className="button button--primary header-cta" to="/create-account">Get started</Link>
           <button className="icon-button menu-trigger" type="button" aria-expanded={isOpen} aria-controls="mobile-navigation" aria-label={isOpen ? 'Close navigation' : 'Open navigation'} onClick={() => setIsOpen((open) => !open)}>
             {isOpen ? <X size={21} aria-hidden="true" /> : <Menu size={21} aria-hidden="true" />}

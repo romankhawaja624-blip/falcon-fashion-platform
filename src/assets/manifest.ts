@@ -49,6 +49,77 @@ export const assetManifest: AssetReference[] = [
     alt: 'Obsidian silk gown in a dramatic editorial setting',
     referenceScreens: ['obsidian_silk_gown_product_detail', 'obsidian_silk_gown_mobile_detail'],
   },
+  /* New product assets — these use the generated fallback system until real photography is provided */
+  {
+    id: 'graphite-tailored-trousers-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Graphite tailored wide-leg trousers in Italian wool',
+    referenceScreens: [],
+  },
+  {
+    id: 'charcoal-blazer-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Charcoal double-breasted blazer with peak lapel',
+    referenceScreens: [],
+  },
+  {
+    id: 'ivory-knit-turtleneck-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Ivory ribbed merino wool turtleneck',
+    referenceScreens: [],
+  },
+  {
+    id: 'smoke-cashmere-wrap-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Smoke-toned oversized cashmere wrap',
+    referenceScreens: [],
+  },
+  {
+    id: 'obsidian-silk-camisole-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Obsidian silk camisole in bias-cut charmeuse',
+    referenceScreens: [],
+  },
+  {
+    id: 'midnight-structured-cape-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Midnight structured cape in double-faced wool',
+    referenceScreens: [],
+  },
+  {
+    id: 'nero-leather-clutch-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Nero calfskin leather geometric clutch',
+    referenceScreens: [],
+  },
+  {
+    id: 'champagne-draped-dress-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Champagne silk draped column dress with one-shoulder neckline',
+    referenceScreens: [],
+  },
+  {
+    id: 'slate-wool-overshirt-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Slate brushed wool overshirt with utility pockets',
+    referenceScreens: [],
+  },
+  {
+    id: 'carbon-silk-scarf-main',
+    kind: 'product',
+    source: 'generated',
+    alt: 'Carbon silk twill scarf with tonal geometric print',
+    referenceScreens: [],
+  },
 ];
 
 export function getAsset(id: string) {

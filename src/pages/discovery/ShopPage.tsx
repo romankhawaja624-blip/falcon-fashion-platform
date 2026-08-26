@@ -15,7 +15,7 @@ export function ShopPage() {
           <Search size={19} aria-hidden="true" />
         </label>
         <nav className="commerce-categories" aria-label="Shop categories">
-          <Link to="/collections/women">Women</Link><Link to="/shop">Men</Link><Link to="/shop">Accessories</Link>
+          <Link to="/collections/women">Women</Link><Link to="/shop">Outerwear</Link><Link to="/shop">Tailoring</Link><Link to="/shop">Knitwear</Link><Link to="/shop">Accessories</Link>
         </nav>
       </section>
       <section className="product-section container" aria-labelledby="featured-title">
