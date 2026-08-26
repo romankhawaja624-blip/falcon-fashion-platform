@@ -11,6 +11,8 @@ import { CheckoutPage } from '../pages/checkout/CheckoutPage';
 import { ConfirmationPage } from '../pages/checkout/ConfirmationPage';
 import { CheckoutErrorPage } from '../pages/checkout/CheckoutErrorPage';
 import { OrderTrackingPage } from '../pages/orders/OrderTrackingPage';
+import { OrdersPage } from '../pages/orders/OrdersPage';
+import { WishlistPage } from '../pages/wishlist/WishlistPage';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { SignInPage } from '../pages/auth/SignInPage';
 import { RegisterPage } from '../pages/auth/RegisterPage';
@@ -20,6 +22,7 @@ import { AtelierLayout } from '../layouts/AtelierLayout';
 import { DashboardPage } from '../pages/atelier/DashboardPage';
 import { WardrobePage } from '../pages/atelier/WardrobePage';
 import { ProgressPage } from '../pages/atelier/ProgressPage';
+import { SettingsPage } from '../pages/atelier/SettingsPage';
 import { StylistPage } from '../pages/ai/StylistPage';
 import { OutfitBuilderPage } from '../pages/ai/OutfitBuilderPage';
 import { CuratedLookPage } from '../pages/ai/CuratedLookPage';
@@ -33,7 +36,10 @@ import { AdminSupportPage } from '../pages/admin/AdminSupportPage';
 import { AdminLegalPage } from '../pages/admin/AdminLegalPage';
 import { AdminProductEditorPage } from '../pages/admin/AdminProductEditorPage';
 import { TicketPage } from '../pages/support/TicketPage';
+import { HelpPage } from '../pages/support/HelpPage';
+import { NotificationsPage } from '../pages/notifications/NotificationsPage';
 import { PrivacyPage } from '../pages/legal/PrivacyPage';
+import { NotFoundPage } from '../pages/errors/NotFoundPage';
 
 export const router = createBrowserRouter([
   { path: '/sign-in', element: <AuthLayout><SignInPage /></AuthLayout> },
@@ -45,8 +51,31 @@ export const router = createBrowserRouter([
   { path: '/stylist', element: <AtelierLayout />, children: [{ index: true, element: <StylistPage /> }] },
   { path: '/stylist/builder', element: <AtelierLayout />, children: [{ index: true, element: <OutfitBuilderPage /> }] },
   { path: '/stylist/look/:slug', element: <AtelierLayout />, children: [{ index: true, element: <CuratedLookPage /> }] },
-  { path: '/atelier', element: <AtelierLayout />, children: [{ index: true, element: <DashboardPage /> }, { path: 'wardrobe', element: <WardrobePage /> }, { path: 'intelligence', element: <ProgressPage /> }] },
-  { path: '/admin', element: <AdminLayout />, children: [{ index: true, element: <AdminOverviewPage /> }, { path: 'products', element: <AdminCatalogPage /> }, { path: 'products/new', element: <AdminProductEditorPage /> }, { path: 'inventory', element: <AdminInventoryPage /> }, { path: 'customers', element: <AdminCustomersPage /> }, { path: 'orders/:id', element: <AdminOrderPage /> }, { path: 'support', element: <AdminSupportPage /> }, { path: 'legal', element: <AdminLegalPage /> }] },
+  { path: '/assistant', element: <AtelierLayout />, children: [{ index: true, element: <StylistPage /> }] },
+  {
+    path: '/atelier',
+    element: <AtelierLayout />,
+    children: [
+      { index: true, element: <DashboardPage /> },
+      { path: 'wardrobe', element: <WardrobePage /> },
+      { path: 'intelligence', element: <ProgressPage /> },
+      { path: 'settings', element: <SettingsPage /> },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <AdminLayout />,
+    children: [
+      { index: true, element: <AdminOverviewPage /> },
+      { path: 'products', element: <AdminCatalogPage /> },
+      { path: 'products/new', element: <AdminProductEditorPage /> },
+      { path: 'inventory', element: <AdminInventoryPage /> },
+      { path: 'customers', element: <AdminCustomersPage /> },
+      { path: 'orders/:id', element: <AdminOrderPage /> },
+      { path: 'support', element: <AdminSupportPage /> },
+      { path: 'legal', element: <AdminLegalPage /> },
+    ],
+  },
   {
     path: '/',
     element: <PublicLayout />,
@@ -63,8 +92,14 @@ export const router = createBrowserRouter([
       { path: 'checkout/payment', element: <CheckoutPage /> },
       { path: 'checkout/review', element: <CheckoutPage /> },
       { path: 'checkout/confirmation', element: <ConfirmationPage /> },
+      { path: 'checkout/success/:orderId', element: <ConfirmationPage /> },
       { path: 'checkout/error', element: <CheckoutErrorPage /> },
+      { path: 'orders', element: <OrdersPage /> },
       { path: 'orders/:orderId', element: <OrderTrackingPage /> },
+      { path: 'wishlist', element: <WishlistPage /> },
+      { path: 'help', element: <HelpPage /> },
+      { path: 'notifications', element: <PublicLayout><NotificationsPage /></PublicLayout> },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);
