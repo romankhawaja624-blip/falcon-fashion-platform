@@ -2,7 +2,7 @@ export const atelierNav = [
   { label: 'My Atelier', to: '/atelier' },
   { label: 'Wardrobe', to: '/atelier/wardrobe' },
   { label: 'Style journey', to: '/atelier/intelligence' },
-  { label: 'Orders', to: '/orders/FX-1048' },
+  { label: 'Orders', to: '/orders' },
 ];
 
 export const wardrobeItems = [

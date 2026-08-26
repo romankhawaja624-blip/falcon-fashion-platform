@@ -213,3 +213,10 @@ export const products: Product[] = [
 export function getProduct(slug: string) {
   return products.find((product) => product.slug === slug) ?? products[0];
 }
+
+export function getProductStock(slug: string): number {
+  if (slug === 'charcoal-blazer') return 0;
+  if (slug === 'obsidian-silk-gown') return 8;
+  if (slug === 'obsidian-wool-coat') return 24;
+  return 10; // Default stock for other demo products
+}

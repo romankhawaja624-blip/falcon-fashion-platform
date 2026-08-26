@@ -56,7 +56,8 @@ export function PublicFooter() {
           <ul className="public-footer__list">
             <li><Link to="/help">Help & Concierge</Link></li>
             <li><Link to="/support/ticket/SUP-2084">Active Ticket</Link></li>
-            <li><Link to="/orders/FX-1048">Order Tracking</Link></li>
+            <li><Link to="/orders">Order Tracking</Link></li>
+            <li><Link to="/wishlist">Saved Wishlist</Link></li>
             <li><Link to="/legal">Privacy & Policies</Link></li>
           </ul>
         </nav>

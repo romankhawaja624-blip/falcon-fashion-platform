@@ -5,6 +5,11 @@ import { router } from './routes/router';
 import { CartProvider } from './features/cart/CartContext';
 import { NotificationProvider } from './features/notifications/NotificationContext';
 import { CheckoutProvider } from './features/checkout/CheckoutContext';
+import { OrderProvider } from './features/orders/OrderContext';
+import { WishlistProvider } from './features/wishlist/WishlistContext';
+import { ToastProvider } from './features/toast/ToastContext';
+import { RecentlyViewedProvider } from './features/recently-viewed/RecentlyViewedContext';
+import { Toast } from './components/ui/Toast';
 import '@fontsource/bodoni-moda/400.css';
 import '@fontsource/hanken-grotesk/400.css';
 import '@fontsource/hanken-grotesk/600.css';
@@ -14,12 +19,21 @@ import './styles/global.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-      <CartProvider>
-      <CheckoutProvider>
-        <NotificationProvider>
-          <RouterProvider router={router} />
-        </NotificationProvider>
-      </CheckoutProvider>
-    </CartProvider>
+    <ToastProvider>
+      <OrderProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <RecentlyViewedProvider>
+              <CheckoutProvider>
+                <NotificationProvider>
+                  <RouterProvider router={router} />
+                  <Toast />
+                </NotificationProvider>
+              </CheckoutProvider>
+            </RecentlyViewedProvider>
+          </WishlistProvider>
+        </CartProvider>
+      </OrderProvider>
+    </ToastProvider>
   </StrictMode>,
 );

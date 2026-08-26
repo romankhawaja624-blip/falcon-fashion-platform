@@ -1,11 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useNotifications } from '../../features/notifications/NotificationContext';
-import { formatDistanceToNow } from 'date-fns';
 import { Button } from '../ui/Button';
 
 type Props = {
   notificationId: string;
 };
+
+function formatRelativeTime(date: Date): string {
+  const now = new Date();
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  if (diffInSeconds < 10) return 'just now';
+  if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  return `${diffInDays}d ago`;
+}
 
 export function NotificationItem({ notificationId }: Props) {
   const { notifications, markAsRead } = useNotifications();
@@ -35,7 +47,7 @@ export function NotificationItem({ notificationId }: Props) {
       <p className="notification-item__body">{body}</p>
       <footer className="notification-item__footer">
         <time dateTime={timestamp}>
-          {formatDistanceToNow(new Date(timestamp), { addSuffix: true })}
+          {formatRelativeTime(new Date(timestamp))}
         </time>
         {!read && (
           <Button variant="secondary" onClick={handleMarkRead} aria-label="Mark as read">

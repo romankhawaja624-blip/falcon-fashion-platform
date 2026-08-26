@@ -11,6 +11,8 @@ import { CheckoutPage } from '../pages/checkout/CheckoutPage';
 import { ConfirmationPage } from '../pages/checkout/ConfirmationPage';
 import { CheckoutErrorPage } from '../pages/checkout/CheckoutErrorPage';
 import { OrderTrackingPage } from '../pages/orders/OrderTrackingPage';
+import { OrdersPage } from '../pages/orders/OrdersPage';
+import { WishlistPage } from '../pages/wishlist/WishlistPage';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { SignInPage } from '../pages/auth/SignInPage';
 import { RegisterPage } from '../pages/auth/RegisterPage';
@@ -90,8 +92,11 @@ export const router = createBrowserRouter([
       { path: 'checkout/payment', element: <CheckoutPage /> },
       { path: 'checkout/review', element: <CheckoutPage /> },
       { path: 'checkout/confirmation', element: <ConfirmationPage /> },
+      { path: 'checkout/success/:orderId', element: <ConfirmationPage /> },
       { path: 'checkout/error', element: <CheckoutErrorPage /> },
+      { path: 'orders', element: <OrdersPage /> },
       { path: 'orders/:orderId', element: <OrderTrackingPage /> },
+      { path: 'wishlist', element: <WishlistPage /> },
       { path: 'help', element: <HelpPage /> },
       { path: 'notifications', element: <PublicLayout><NotificationsPage /></PublicLayout> },
       { path: '*', element: <NotFoundPage /> },

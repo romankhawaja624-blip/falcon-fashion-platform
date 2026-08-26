@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 type Notification = {
   id: string;
@@ -22,44 +22,51 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   // Load from localStorage on mount
-  React.useEffect(() => {
-    const stored = localStorage.getItem('falcon_notifications');
-    if (stored) {
-      setNotifications(JSON.parse(stored));
-    } else {
-      const mock: Notification[] = [
-        {
-          id: '1',
-          type: 'order',
-          title: 'Your order #1234 shipped',
-          body: 'Your package is on the way and will arrive tomorrow.',
-          timestamp: new Date().toISOString(),
-          read: false,
-        },
-        {
-          id: '2',
-          type: 'ai',
-          title: 'New AI stylist recommendation',
-          body: 'We think you’ll love this new look based on your recent choices.',
-          timestamp: new Date().toISOString(),
-          read: false,
-        },
-        {
-          id: '3',
-          type: 'promotion',
-          title: 'Exclusive 15% off',
-          body: 'Treat yourself with a limited‑time discount on all atelier pieces.',
-          timestamp: new Date().toISOString(),
-          read: false,
-        },
-      ];
-      setNotifications(mock);
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('falcon_notifications');
+      if (stored) {
+        setNotifications(JSON.parse(stored));
+        return;
+      }
+    } catch {
+      // Fallback if parsing fails
     }
+
+    const mock: Notification[] = [
+      {
+        id: '1',
+        type: 'order',
+        title: 'Your order #1234 shipped',
+        body: 'Your package is on the way and will arrive tomorrow.',
+        timestamp: new Date().toISOString(),
+        read: false,
+      },
+      {
+        id: '2',
+        type: 'ai',
+        title: 'New AI stylist recommendation',
+        body: 'We think you’ll love this new look based on your recent choices.',
+        timestamp: new Date().toISOString(),
+        read: false,
+      },
+      {
+        id: '3',
+        type: 'promotion',
+        title: 'Exclusive 15% off',
+        body: 'Treat yourself with a limited‑time discount on all atelier pieces.',
+        timestamp: new Date().toISOString(),
+        read: false,
+      },
+    ];
+    setNotifications(mock);
   }, []);
 
   // Persist changes
-  React.useEffect(() => {
-    localStorage.setItem('falcon_notifications', JSON.stringify(notifications));
+  useEffect(() => {
+    if (notifications.length > 0) {
+      localStorage.setItem('falcon_notifications', JSON.stringify(notifications));
+    }
   }, [notifications]);
 
   const markAsRead = (id: string) => {
