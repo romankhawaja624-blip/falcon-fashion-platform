@@ -201,6 +201,8 @@ export function OrderTrackingPage() {
         <Link className="text-link" to="/orders">&larr; Back to all orders</Link>
         <span>/</span>
         <Link className="text-link" to="/shop">Continue shopping &rarr;</Link>
+        <span>/</span>
+        <Link className="text-link" to="/help">Need help with this order?</Link>
       </div>
     </main>
   );

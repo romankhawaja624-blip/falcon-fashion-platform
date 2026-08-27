@@ -85,8 +85,12 @@ export function ConfirmationPage() {
         </section>
       </div>
 
-      <div style={{ marginTop: '48px' }}>
+      <div style={{ marginTop: '48px', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
         <Link className="text-link" to="/shop">Continue shopping &rarr;</Link>
+        <span style={{ color: 'var(--color-outline-muted)' }}>/</span>
+        <Link className="text-link" to="/atelier">Visit Your Atelier</Link>
+        <span style={{ color: 'var(--color-outline-muted)' }}>/</span>
+        <Link className="text-link" to="/stylist">Consult AI Stylist</Link>
       </div>
     </main>
   );

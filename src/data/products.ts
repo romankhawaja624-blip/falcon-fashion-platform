@@ -215,8 +215,25 @@ export function getProduct(slug: string) {
 }
 
 export function getProductStock(slug: string): number {
+  try {
+    const override = localStorage.getItem(`falcon_stock_${slug}`);
+    if (override !== null) {
+      const parsed = parseInt(override, 10);
+      if (!isNaN(parsed)) return parsed;
+    }
+  } catch {
+    // fallback
+  }
   if (slug === 'charcoal-blazer') return 0;
   if (slug === 'obsidian-silk-gown') return 8;
   if (slug === 'obsidian-wool-coat') return 24;
   return 10; // Default stock for other demo products
+}
+
+export function setProductStock(slug: string, newStock: number): void {
+  try {
+    localStorage.setItem(`falcon_stock_${slug}`, Math.max(0, newStock).toString());
+  } catch (e) {
+    console.error('Failed to set product stock in localStorage', e);
+  }
 }

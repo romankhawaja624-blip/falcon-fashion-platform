@@ -7,14 +7,68 @@ import { MetricWidget } from '../../components/atelier/MetricWidget';
 import { WardrobeCard } from '../../components/atelier/WardrobeCard';
 import { products } from '../../data/products';
 import { wardrobeItems } from '../../data/atelier';
+import { isPageVisible } from '../../data/pageRegistry';
 
 export function HomePage() {
+  const audiences = [
+    { id: 'women', label: 'Women', tag: 'Curated Silhouettes', path: '/collections/women' },
+    { id: 'men', label: 'Men', tag: 'Architectural Tailoring', path: '/collections/men' },
+    { id: 'kids', label: 'Kids', tag: 'Atelier Essentials', path: '/collections/kids' },
+    { id: 'youngAdults', label: 'Young Adults', tag: 'Contemporary Edit', path: '/collections/youngAdults' },
+    { id: 'adults', label: 'Adults', tag: 'Archival Luxury', path: '/collections/adults' },
+  ].filter((aud) => isPageVisible(aud.path));
+
   return (
     <main className="home-page">
       {/* 1. Hero Section */}
       <FalconHero />
 
-      {/* 2. Selected Pieces / Product Rail */}
+      {/* 2. Audience Collections Discovery */}
+      {audiences.length > 0 && (
+        <section className="container" style={{ marginTop: '80px' }} aria-labelledby="audience-discovery-title">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Audience Edit</p>
+              <h2 id="audience-discovery-title">Explore Collections</h2>
+            </div>
+            <Link className="text-link" to="/discover">
+              Discover all collections <ArrowRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginTop: '32px' }}>
+            {audiences.map((aud) => (
+              <Link
+                key={aud.id}
+                to={aud.path}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  padding: '24px',
+                  minHeight: '200px',
+                  background: 'var(--color-surface, #141416)',
+                  border: '1px solid var(--color-outline-muted)',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  transition: 'border-color var(--motion-standard), transform var(--motion-standard)',
+                }}
+              >
+                <span className="eyebrow" style={{ margin: 0, fontSize: '11px' }}>{aud.tag}</span>
+                <div>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 300, color: 'var(--color-text)', margin: '0 0 8px 0' }}>
+                    {aud.label}
+                  </h3>
+                  <span className="text-link" style={{ fontSize: '11px' }}>
+                    Explore collection &rarr;
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 3. Selected Pieces / Product Rail */}
       <div className="container" style={{ marginTop: '80px' }}>
         <div className="section-heading">
           <div>
@@ -33,7 +87,7 @@ export function HomePage() {
         />
       </div>
 
-      {/* 3. Editorial & Craftsmanship Section */}
+      {/* 4. Editorial & Craftsmanship Section */}
       <section className="home-editorial container" aria-labelledby="editorial-craft-title">
         <div className="home-editorial__visual">
           <RemoteImage assetId="obsidian-wool-coat-collar" alt="Close craftsmanship detail of the Obsidian Wool Coat collar" />
@@ -65,7 +119,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* 4. Falcon AI Stylist Section */}
+      {/* 5. Falcon AI Stylist Section */}
       <section className="home-ai-section container" aria-labelledby="ai-stylist-title">
         <div className="home-ai-section__inner">
           <div className="home-ai-section__content">
@@ -111,7 +165,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* 5. Digital Atelier / Wardrobe Preview */}
+      {/* 6. Digital Atelier / Wardrobe Preview */}
       <section className="home-atelier-preview container" aria-labelledby="atelier-preview-title">
         <div className="section-heading">
           <div>
@@ -136,7 +190,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* 6. Closing Editorial Statement / Manifesto */}
+      {/* 7. Closing Editorial Statement / Manifesto */}
       <section className="home-manifesto container" aria-labelledby="manifesto-title">
         <p className="eyebrow">The Future of Fashion</p>
         <h2 id="manifesto-title">High fashion, personalized by intelligence.</h2>

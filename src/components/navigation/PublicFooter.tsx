@@ -1,10 +1,21 @@
 import { ShieldCheck, Sparkles, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { isPageVisible } from '../../data/pageRegistry';
+
+const footerAudienceLinks = [
+  { label: "Women's Collection", to: '/collections/women' },
+  { label: "Men's Collection", to: '/collections/men' },
+  { label: "Kids & Children", to: '/collections/kids' },
+  { label: "Young Adults", to: '/collections/youngAdults' },
+  { label: "Adults Edition", to: '/collections/adults' },
+];
 
 export function PublicFooter() {
   const [currency, setCurrency] = useState('USD ($)');
   const [region, setRegion] = useState('Global (EN)');
+
+  const visibleAudienceLinks = footerAudienceLinks.filter((link) => isPageVisible(link.to));
 
   return (
     <footer className="public-footer" aria-label="Site footer">
@@ -31,12 +42,15 @@ export function PublicFooter() {
 
         {/* Navigation Columns */}
         <nav className="public-footer__col" aria-labelledby="footer-shop-title">
-          <p className="public-footer__heading" id="footer-shop-title">Atelier Shop</p>
+          <p className="public-footer__heading" id="footer-shop-title">Collections</p>
           <ul className="public-footer__list">
-            <li><Link to="/collections/women">Women&apos;s Edit</Link></li>
+            {visibleAudienceLinks.map((link) => (
+              <li key={link.to}>
+                <Link to={link.to}>{link.label}</Link>
+              </li>
+            ))}
             <li><Link to="/shop">Complete Catalog</Link></li>
             <li><Link to="/discover">Curated Drops</Link></li>
-            <li><Link to="/search">Global Search</Link></li>
           </ul>
         </nav>
 
@@ -47,7 +61,7 @@ export function PublicFooter() {
             <li><Link to="/stylist/builder">Outfit Studio</Link></li>
             <li><Link to="/atelier/wardrobe">Digital Wardrobe</Link></li>
             <li><Link to="/atelier/intelligence">Style Journey</Link></li>
-            <li><Link to="/atelier/settings">Atelier Settings</Link></li>
+            <li><Link to="/search">Global Search</Link></li>
           </ul>
         </nav>
 
@@ -55,9 +69,9 @@ export function PublicFooter() {
           <p className="public-footer__heading" id="footer-support-title">Client Services</p>
           <ul className="public-footer__list">
             <li><Link to="/help">Help & Concierge</Link></li>
-            <li><Link to="/support/ticket/SUP-2084">Active Ticket</Link></li>
-            <li><Link to="/orders">Order Tracking</Link></li>
+            <li><Link to="/orders">Order History & Tracking</Link></li>
             <li><Link to="/wishlist">Saved Wishlist</Link></li>
+            <li><Link to="/cart">Shopping Bag</Link></li>
             <li><Link to="/legal">Privacy & Policies</Link></li>
           </ul>
         </nav>

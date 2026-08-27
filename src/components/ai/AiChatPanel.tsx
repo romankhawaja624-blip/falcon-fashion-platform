@@ -1,10 +1,11 @@
-import { Send, Sparkles, Loader2, ShoppingBag } from 'lucide-react';
+import { Send, Sparkles, Loader2, ShoppingBag, Crown } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getProduct, products, type Product } from '../../data/products';
 import { ProductCard } from '../product/ProductCard';
 import { useCart } from '../../features/cart/CartContext';
 import { useToast } from '../../features/toast/ToastContext';
+import { useAccount, FREE_DAILY_LIMIT } from '../../features/account/AccountContext';
 
 type ChatMessage = {
   id: string;
@@ -28,9 +29,22 @@ export function AiChatPanel({ builder = false }: { builder?: boolean }) {
 
   const { addItem } = useCart();
   const { showToast } = useToast();
+  const { membership, canUseAi, incrementAiUsage, dailyAiCount } = useAccount();
 
   const handleSend = (userText: string) => {
     if (!userText.trim() || isThinking) return;
+
+    // Check AI usage allowance
+    if (!canUseAi) {
+      showToast('Daily AI limit reached (3/3). Upgrade to Falcon Pro for unlimited styling.', 'error');
+      return;
+    }
+
+    const allowed = incrementAiUsage();
+    if (!allowed) {
+      showToast('Daily AI limit reached (3/3). Upgrade to Falcon Pro for unlimited styling.', 'error');
+      return;
+    }
 
     const userMessageId = Date.now().toString();
     const newMsg: ChatMessage = { id: userMessageId, sender: 'user', text: userText };
@@ -86,7 +100,7 @@ export function AiChatPanel({ builder = false }: { builder?: boolean }) {
 
   return (
     <section className="ai-chat-panel" aria-labelledby="ai-chat-title">
-      <div className="ai-chat-panel__intro">
+      <div className="ai-chat-panel__intro" style={{ position: 'relative' }}>
         <Sparkles size={34} aria-hidden="true" />
         <p className="eyebrow">Falcon AI Stylist</p>
         <h1 id="ai-chat-title">{builder ? 'Build a look with intention.' : 'Personal Styling Assistant'}</h1>
@@ -95,7 +109,48 @@ export function AiChatPanel({ builder = false }: { builder?: boolean }) {
             ? 'Choose an occasion, mood, or anchor piece. Falcon will compose the rest.'
             : 'Explore architectural silhouettes, pair wardrobe items, or curate looks for global occasions.'}
         </p>
+
+        {/* AI Tier Badge */}
+        <div style={{ marginTop: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', background: 'var(--color-surface-low, #18181c)', padding: '4px 12px', borderRadius: '16px', border: '1px solid var(--color-outline-muted)' }}>
+          {membership === 'pro' ? (
+            <span style={{ color: 'var(--color-champagne)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <Crown size={12} /> Falcon Pro: Unlimited AI Clienteling
+            </span>
+          ) : (
+            <span style={{ color: dailyAiCount >= FREE_DAILY_LIMIT ? '#f44336' : 'var(--color-text-muted)' }}>
+              Free Tier: {dailyAiCount}/{FREE_DAILY_LIMIT} messages used today
+            </span>
+          )}
+        </div>
       </div>
+
+      {/* Limit Reached Warning Banner */}
+      {!canUseAi && membership === 'free' && (
+        <div style={{
+          margin: '1rem 0',
+          padding: '1rem 1.25rem',
+          background: 'rgba(244, 67, 54, 0.1)',
+          border: '1px solid rgba(244, 67, 54, 0.4)',
+          borderRadius: '8px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '1rem',
+        }}>
+          <div>
+            <strong style={{ display: 'block', fontSize: '0.95rem', color: '#f44336' }}>
+              Daily Free AI Limit Reached (3/3)
+            </strong>
+            <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+              Upgrade to Falcon Pro for unlimited styling, personal capsule curation, and 2× XP rewards.
+            </span>
+          </div>
+          <Link className="button button--primary" to="/atelier/settings" style={{ fontSize: '0.8rem', padding: '6px 14px' }}>
+            Upgrade to Pro
+          </Link>
+        </div>
+      )}
 
       <div
         className="ai-chat-messages"
@@ -152,13 +207,13 @@ export function AiChatPanel({ builder = false }: { builder?: boolean }) {
       </div>
 
       <div className="ai-suggestions" style={{ marginBlock: '12px' }}>
-        <button type="button" onClick={() => handleSend('Minimal evening in Milan')}>
+        <button type="button" onClick={() => handleSend('Minimal evening in Milan')} disabled={!canUseAi && membership === 'free'}>
           Minimal evening in Milan
         </button>
-        <button type="button" onClick={() => handleSend('Architectural tailoring for gallery opening')}>
+        <button type="button" onClick={() => handleSend('Architectural tailoring for gallery opening')} disabled={!canUseAi && membership === 'free'}>
           Architectural tailoring
         </button>
-        <button type="button" onClick={() => handleSend('Elevate my black silk pieces')}>
+        <button type="button" onClick={() => handleSend('Elevate my black silk pieces')} disabled={!canUseAi && membership === 'free'}>
           Elevate black silk pieces
         </button>
       </div>
@@ -171,8 +226,9 @@ export function AiChatPanel({ builder = false }: { builder?: boolean }) {
           id="ai-prompt"
           value={inputMsg}
           onChange={(event) => setInputMsg(event.target.value)}
-          placeholder="Describe an occasion, mood, or style preference..."
+          placeholder={!canUseAi && membership === 'free' ? 'Daily AI limit reached. Upgrade to Pro...' : 'Describe an occasion, mood, or style preference...'}
           rows={1}
+          disabled={!canUseAi && membership === 'free'}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
@@ -180,7 +236,7 @@ export function AiChatPanel({ builder = false }: { builder?: boolean }) {
             }
           }}
         />
-        <button type="submit" aria-label="Send message" disabled={!inputMsg.trim() || isThinking}>
+        <button type="submit" aria-label="Send message" disabled={!inputMsg.trim() || isThinking || (!canUseAi && membership === 'free')}>
           <Send size={18} aria-hidden="true" />
         </button>
       </form>

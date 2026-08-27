@@ -1,82 +1,202 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAccount, FREE_DAILY_LIMIT, FREE_MONTHLY_LIMIT } from '../../features/account/AccountContext';
+import { useToast } from '../../features/toast/ToastContext';
 import { Button } from '../../components/ui/Button';
+import { ShieldCheck, Sparkles, Check, Crown } from 'lucide-react';
 
 export function SettingsPage() {
-  const [aesthetic, setAesthetic] = useState('Quiet structure');
-  const [palette, setPalette] = useState('Monochrome');
-  const [aiLearning, setAiLearning] = useState(true);
-  const [currency, setCurrency] = useState('USD ($)');
+  const {
+    membership,
+    profile,
+    updateProfile,
+    upgradeMembership,
+    downgradeMembership,
+    dailyAiCount,
+    monthlyAiCount,
+  } = useAccount();
+
+  const { showToast } = useToast();
+
+  const [name, setName] = useState(profile.name);
+  const [email, setEmail] = useState(profile.email);
+  const [aesthetic, setAesthetic] = useState(profile.aesthetic);
+  const [palette, setPalette] = useState(profile.palette);
+  const [outerwearSize, setOuterwearSize] = useState(profile.outerwearSize);
+  const [tailoringSize, setTailoringSize] = useState(profile.tailoringSize);
+  const [footwearSize, setFootwearSize] = useState(profile.footwearSize);
+  const [currency, setCurrency] = useState(profile.currency);
+  const [region, setRegion] = useState(profile.region);
+  const [aiLearning, setAiLearning] = useState(profile.aiLearning);
+
+  // Notification toggles
+  const [orderNotifs, setOrderNotifs] = useState(profile.notifications.orders);
+  const [promoNotifs, setPromoNotifs] = useState(profile.notifications.promotions);
+  const [stylingNotifs, setStylingNotifs] = useState(profile.notifications.styling);
+  const [conciergeNotifs, setConciergeNotifs] = useState(profile.notifications.concierge);
+
   const [saved, setSaved] = useState(false);
 
   const handleSave = (event: React.FormEvent) => {
     event.preventDefault();
+    updateProfile({
+      name,
+      email,
+      aesthetic,
+      palette,
+      outerwearSize,
+      tailoringSize,
+      footwearSize,
+      currency,
+      region,
+      aiLearning,
+      notifications: {
+        orders: orderNotifs,
+        promotions: promoNotifs,
+        styling: stylingNotifs,
+        concierge: conciergeNotifs,
+      },
+    });
     setSaved(true);
+    showToast('Atelier settings & profile updated successfully.', 'success');
     setTimeout(() => setSaved(false), 4000);
   };
 
+  const handleMembershipToggle = () => {
+    if (membership === 'free') {
+      upgradeMembership();
+      showToast('Welcome to Falcon Pro Membership! Unlimited AI Clienteling unlocked.', 'success');
+    } else {
+      downgradeMembership();
+      showToast('Switched to Free Atelier Tier.', 'info');
+    }
+  };
+
   return (
-    <div className="atelier-page settings-page">
-      <header className="atelier-page-heading">
+    <div className="atelier-page settings-page" style={{ paddingBottom: '4rem' }}>
+      <header className="atelier-page-heading" style={{ marginBottom: '2.5rem' }}>
         <div>
-          <p className="eyebrow">Atelier / Preferences</p>
-          <h1>Settings & profile.</h1>
-          <p>Fine-tune your personal style parameters, measurements, and AI intelligence.</p>
+          <p className="eyebrow" style={{ color: 'var(--color-champagne, #d4af37)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            Atelier / Preferences
+          </p>
+          <h1 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '2.5rem', margin: '0.5rem 0' }}>
+            Settings & Profile
+          </h1>
+          <p style={{ color: 'var(--color-text-muted)', maxWidth: '600px', margin: 0, lineHeight: 1.6 }}>
+            Fine-tune your personal style parameters, measurements, notification preferences, and membership tier.
+          </p>
         </div>
-        <Link className="text-link" to="/atelier">
+        <Link className="text-link" to="/atelier" style={{ fontSize: '0.9rem' }}>
           &larr; Back to dashboard
         </Link>
       </header>
 
       {saved && (
-        <p className="auth-success" role="status" style={{ marginBlock: '24px 0', textAlign: 'start' }}>
-          Preferences updated successfully.
-        </p>
+        <div style={{ padding: '1rem', background: 'rgba(76, 175, 80, 0.1)', border: '1px solid #4caf50', borderRadius: '6px', color: '#4caf50', marginBottom: '2rem' }}>
+          ✓ Preferences saved to your local atelier profile.
+        </div>
       )}
 
-      <form className="settings-form" onSubmit={handleSave} style={{ marginTop: '48px', display: 'grid', gap: '48px' }}>
-        <section className="admin-panel" style={{ background: 'var(--color-surface-low)' }}>
-          <div className="admin-panel-heading" style={{ marginBottom: '24px' }}>
-            <div>
-              <p className="eyebrow">01 / Identity</p>
-              <h2>Member profile</h2>
-            </div>
-            <span className="status-pill status-pill--ready">Premium member</span>
+      {/* Membership Plan Section */}
+      <section className="admin-panel" style={{ background: 'var(--color-surface, #141416)', border: '1px solid var(--color-outline-muted)', borderRadius: '8px', padding: '1.75rem', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <p className="eyebrow" style={{ color: 'var(--color-champagne)', textTransform: 'uppercase' }}>Membership Tier</p>
+            <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.75rem', margin: '0.25rem 0' }}>
+              {membership === 'pro' ? 'Falcon Pro Atelier' : 'Free Atelier Member'}
+            </h2>
           </div>
-          <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+          <span className={`status-pill ${membership === 'pro' ? 'status-pill--ready' : ''}`} style={{
+            padding: '6px 14px',
+            borderRadius: '20px',
+            border: '1px solid var(--color-champagne)',
+            color: 'var(--color-champagne)',
+            fontSize: '0.8rem',
+            textTransform: 'uppercase',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}>
+            {membership === 'pro' ? <Crown size={14} /> : <ShieldCheck size={14} />}
+            {membership === 'pro' ? 'Pro Member' : 'Free Tier'}
+          </span>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ background: 'var(--color-surface-low, #1a1a1e)', padding: '1.25rem', borderRadius: '6px' }}>
+            <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>Free Tier Allowances</h3>
+            <ul style={{ paddingLeft: '1.2rem', color: 'var(--color-text-muted)', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
+              <li>3 AI messages / day (Used today: {dailyAiCount}/3)</li>
+              <li>50 AI messages / month (Used this month: {monthlyAiCount}/50)</li>
+              <li>Standard catalog & order tracking</li>
+            </ul>
+          </div>
+
+          <div style={{ background: 'var(--color-surface-low, #1a1a1e)', padding: '1.25rem', borderRadius: '6px', border: '1px solid var(--color-champagne, #d4af37)' }}>
+            <h3 style={{ fontSize: '1rem', color: 'var(--color-champagne)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Crown size={16} /> Falcon Pro Benefits
+            </h3>
+            <ul style={{ paddingLeft: '1.2rem', color: 'var(--color-text)', fontSize: '0.875rem', lineHeight: 1.6, margin: 0 }}>
+              <li>Unlimited Falcon AI Clienteling & Styling</li>
+              <li>Priority Wardrobe Curation & Capsule Builder</li>
+              <li>2× XP Rewards & 48h Drop Early Access</li>
+              <li>Complimentary Express Global Shipping</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <Button type="button" onClick={handleMembershipToggle} variant={membership === 'free' ? 'primary' : 'secondary'}>
+            {membership === 'free' ? 'Upgrade to Falcon Pro' : 'Downgrade to Free Tier'}
+          </Button>
+        </div>
+      </section>
+
+      {/* Form Settings */}
+      <form className="settings-form" onSubmit={handleSave} style={{ display: 'grid', gap: '2rem' }}>
+        {/* Identity */}
+        <section className="admin-panel" style={{ background: 'var(--color-surface, #141416)', border: '1px solid var(--color-outline-muted)', borderRadius: '8px', padding: '1.75rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.5rem', marginBottom: '1.25rem' }}>
+            01 / Member Profile & Identity
+          </h2>
+          <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
             <label className="form-field">
-              <span>Full name</span>
-              <input defaultValue="Alex Morgan" aria-label="Full name" />
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Full Name</span>
+              <input value={name} onChange={(e) => setName(e.target.value)} required style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }} />
             </label>
             <label className="form-field">
-              <span>Email address</span>
-              <input defaultValue="alex@example.com" type="email" aria-label="Email address" />
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Email Address</span>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }} />
             </label>
             <label className="form-field">
-              <span>Atelier ID</span>
-              <input value="FX-MBR-8492" disabled aria-label="Atelier ID" style={{ opacity: 0.6 }} />
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Atelier Member ID</span>
+              <input value={profile.atelierId} disabled style={{ width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--color-outline-muted)', color: 'var(--color-text-muted)', borderRadius: '4px', cursor: 'not-allowed' }} />
             </label>
           </div>
         </section>
 
-        <section className="admin-panel" style={{ background: 'var(--color-surface-low)' }}>
-          <div className="admin-panel-heading" style={{ marginBottom: '24px' }}>
+        {/* Style Parameters */}
+        <section className="admin-panel" style={{ background: 'var(--color-surface, #141416)', border: '1px solid var(--color-outline-muted)', borderRadius: '8px', padding: '1.75rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.5rem', marginBottom: '1.25rem' }}>
+            02 / Aesthetic Direction
+          </h2>
+          <div style={{ display: 'grid', gap: '1.5rem' }}>
             <div>
-              <p className="eyebrow">02 / Style parameters</p>
-              <h2>Aesthetic direction</h2>
-            </div>
-          </div>
-          <div style={{ display: 'grid', gap: '24px' }}>
-            <div>
-              <span className="field__label" style={{ display: 'block', marginBottom: '12px' }}>Primary aesthetic</span>
-              <div className="filter-group" role="radiogroup" aria-label="Primary aesthetic">
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.75rem' }}>Primary Aesthetic</span>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                 {['Quiet structure', 'Fluid ease', 'Avant-garde edge'].map((opt) => (
                   <button
                     key={opt}
                     type="button"
-                    role="radio"
-                    aria-checked={aesthetic === opt}
-                    className={aesthetic === opt ? 'filter-chip filter-chip--active' : 'filter-chip'}
+                    style={{
+                      padding: '0.5rem 1.25rem',
+                      borderRadius: '20px',
+                      border: '1px solid var(--color-outline-muted)',
+                      background: aesthetic === opt ? 'var(--color-text, #fff)' : 'transparent',
+                      color: aesthetic === opt ? 'var(--color-background, #000)' : 'var(--color-text, #fff)',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                    }}
                     onClick={() => setAesthetic(opt)}
                   >
                     {opt}
@@ -85,15 +205,21 @@ export function SettingsPage() {
               </div>
             </div>
             <div>
-              <span className="field__label" style={{ display: 'block', marginBottom: '12px' }}>Signature palette</span>
-              <div className="filter-group" role="radiogroup" aria-label="Signature palette">
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.75rem' }}>Signature Palette</span>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                 {['Monochrome', 'Champagne & Ink', 'Mineral Slate', 'Earth & Stone'].map((opt) => (
                   <button
                     key={opt}
                     type="button"
-                    role="radio"
-                    aria-checked={palette === opt}
-                    className={palette === opt ? 'filter-chip filter-chip--active' : 'filter-chip'}
+                    style={{
+                      padding: '0.5rem 1.25rem',
+                      borderRadius: '20px',
+                      border: '1px solid var(--color-outline-muted)',
+                      background: palette === opt ? 'var(--color-text, #fff)' : 'transparent',
+                      color: palette === opt ? 'var(--color-background, #000)' : 'var(--color-text, #fff)',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                    }}
                     onClick={() => setPalette(opt)}
                   >
                     {opt}
@@ -104,79 +230,76 @@ export function SettingsPage() {
           </div>
         </section>
 
-        <section className="admin-panel" style={{ background: 'var(--color-surface-low)' }}>
-          <div className="admin-panel-heading" style={{ marginBottom: '24px' }}>
-            <div>
-              <p className="eyebrow">03 / Sizing specifications</p>
-              <h2>Measurements</h2>
-            </div>
-          </div>
-          <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
+        {/* Sizing Specifications */}
+        <section className="admin-panel" style={{ background: 'var(--color-surface, #141416)', border: '1px solid var(--color-outline-muted)', borderRadius: '8px', padding: '1.75rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.5rem', marginBottom: '1.25rem' }}>
+            03 / Sizing Specifications
+          </h2>
+          <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
             <label className="form-field">
-              <span>Outerwear size</span>
-              <input defaultValue="M (Medium)" aria-label="Outerwear size" />
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Outerwear Size</span>
+              <input value={outerwearSize} onChange={(e) => setOuterwearSize(e.target.value)} style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }} />
             </label>
             <label className="form-field">
-              <span>Tailoring & blazer</span>
-              <input defaultValue="38R / EU 48" aria-label="Tailoring size" />
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Tailoring & Blazer</span>
+              <input value={tailoringSize} onChange={(e) => setTailoringSize(e.target.value)} style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }} />
             </label>
             <label className="form-field">
-              <span>Eveningwear & gowns</span>
-              <input defaultValue="S / UK 8" aria-label="Eveningwear size" />
-            </label>
-            <label className="form-field">
-              <span>Footwear</span>
-              <input defaultValue="39 EU / 8.5 US" aria-label="Footwear size" />
+              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Footwear</span>
+              <input value={footwearSize} onChange={(e) => setFootwearSize(e.target.value)} style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }} />
             </label>
           </div>
         </section>
 
-        <section className="admin-panel" style={{ background: 'var(--color-surface-low)' }}>
-          <div className="admin-panel-heading" style={{ marginBottom: '24px' }}>
-            <div>
-              <p className="eyebrow">04 / Intelligence & regional</p>
-              <h2>AI & locale controls</h2>
+        {/* Notifications & Currency */}
+        <section className="admin-panel" style={{ background: 'var(--color-surface, #141416)', border: '1px solid var(--color-outline-muted)', borderRadius: '8px', padding: '1.75rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.5rem', marginBottom: '1.25rem' }}>
+            04 / Notifications & Regional Controls
+          </h2>
+          <div style={{ display: 'grid', gap: '1.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={orderNotifs} onChange={(e) => setOrderNotifs(e.target.checked)} />
+                <span>Order Status Notifications</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={stylingNotifs} onChange={(e) => setStylingNotifs(e.target.checked)} />
+                <span>AI Styling Recommendations</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={promoNotifs} onChange={(e) => setPromoNotifs(e.target.checked)} />
+                <span>Private Collection Drops</span>
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem' }}>
+                <input type="checkbox" checked={conciergeNotifs} onChange={(e) => setConciergeNotifs(e.target.checked)} />
+                <span>Concierge & Support Tickets</span>
+              </label>
             </div>
-          </div>
-          <div style={{ display: 'grid', gap: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
-              <div>
-                <strong style={{ display: 'block', fontSize: '16px', fontWeight: 400 }}>Style Intelligence Learning</strong>
-                <small style={{ color: 'var(--color-text-muted)', fontSize: '13px' }}>Allow Falcon AI to learn from your styling sessions and wardrobe choices.</small>
-              </div>
-              <button
-                type="button"
-                className={aiLearning ? 'filter-chip filter-chip--active' : 'filter-chip'}
-                onClick={() => setAiLearning(!aiLearning)}
-                aria-pressed={aiLearning}
-              >
-                {aiLearning ? 'Active' : 'Disabled'}
-              </button>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', paddingTop: '16px', borderTop: '1px solid var(--color-outline-muted)' }}>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid var(--color-outline-muted)' }}>
               <label className="form-field">
-                <span>Preferred currency</span>
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Preferred Currency</span>
                 <select
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
-                  style={{ background: 'transparent', border: 0, borderBottom: '1px solid var(--color-outline-muted)', color: 'var(--color-text)', padding: '12px 0' }}
+                  style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }}
                 >
-                  <option value="USD ($)" style={{ background: 'var(--color-surface)' }}>USD ($) — US Dollar</option>
-                  <option value="EUR (€)" style={{ background: 'var(--color-surface)' }}>EUR (€) — Euro</option>
-                  <option value="GBP (£)" style={{ background: 'var(--color-surface)' }}>GBP (£) — British Pound</option>
-                  <option value="AED (د.إ)" style={{ background: 'var(--color-surface)' }}>AED (د.إ) — UAE Dirham</option>
+                  <option value="USD ($)">USD ($) — US Dollar</option>
+                  <option value="EUR (€)">EUR (€) — Euro</option>
+                  <option value="GBP (£)">GBP (£) — British Pound</option>
+                  <option value="AED (د.إ)">AED (د.إ) — UAE Dirham</option>
                 </select>
               </label>
               <label className="form-field">
-                <span>Regional delivery zone</span>
-                <input defaultValue="North America / Global Express" aria-label="Regional delivery zone" />
+                <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>Regional Delivery Zone</span>
+                <input value={region} onChange={(e) => setRegion(e.target.value)} style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }} />
               </label>
             </div>
           </div>
         </section>
 
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <Button type="submit">Save preferences</Button>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <Button type="submit">Save All Preferences</Button>
           <Link className="button button--secondary" to="/atelier">Cancel</Link>
         </div>
       </form>

@@ -1,11 +1,12 @@
 export const adminNav = [
-  { label: 'Overview', to: '/admin' },
-  { label: 'Catalog', to: '/admin/products' },
+  { label: 'Dashboard', to: '/admin' },
+  { label: 'Products', to: '/admin/products' },
+  { label: 'Add Product', to: '/admin/products/new' },
   { label: 'Inventory', to: '/admin/inventory' },
   { label: 'Customers', to: '/admin/customers' },
   { label: 'Orders', to: '/admin/orders/FX-1048' },
   { label: 'Support', to: '/admin/support' },
-  { label: 'Legal & regional', to: '/admin/legal' },
+  { label: 'Legal', to: '/admin/legal' },
 ];
 
 export const adminProducts = [
