@@ -1,23 +1,24 @@
 import { Link } from 'react-router-dom';
+import { Package, ArrowRight } from 'lucide-react';
 import { useOrders } from '../../features/orders/OrderContext';
 
 export function OrdersPage() {
   const { orders } = useOrders();
 
   return (
-    <main className="flow-page orders-page container" aria-labelledby="orders-title" style={{ paddingBlock: '156px 120px' }}>
-      <div className="flow-heading" style={{ borderBlockEnd: '1px solid var(--color-outline-muted)', paddingBlockEnd: '40px' }}>
+    <main className="flow-page orders-page container" aria-labelledby="orders-title">
+      <div className="flow-heading">
         <p className="eyebrow">Your Account</p>
-        <h1 id="orders-title" style={{ fontFamily: 'var(--font-display)', fontWeight: 300, fontSize: 'clamp(48px, 6vw, 80px)', margin: '0 0 16px', lineHeight: 1 }}>
+        <h1 id="orders-title" className="orders-page__title">
           Your orders
         </h1>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '18px', maxWidth: '520px', margin: 0 }}>
+        <p className="orders-page__subtitle">
           Manage your commissions, track active shipments, and view past purchases.
         </p>
       </div>
 
       {orders.length > 0 ? (
-        <div style={{ marginTop: '48px', display: 'grid', gap: '24px' }}>
+        <div className="orders-list">
           {orders.map((order) => {
             const formattedDate = new Date(order.date).toLocaleDateString('en-US', {
               day: 'numeric',
@@ -29,51 +30,41 @@ export function OrdersPage() {
             return (
               <article
                 key={order.id}
-                className="admin-panel"
-                style={{
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '24px',
-                  background: 'var(--color-surface-low)',
-                  border: '1px solid var(--color-outline-muted)',
-                  padding: '24px 32px',
-                }}
+                className="order-card"
               >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
+                <div className="order-card__info">
+                  <div className="order-card__top">
                     <span
-                      className={`status-pill ${
-                        order.status === 'delivered' ? 'status-pill--ready' : ''
-                      }`}
-                      style={{
-                        display: 'inline-flex',
-                        border: '1px solid var(--color-outline-muted)',
-                        padding: '6px 12px',
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '11px',
-                        textTransform: 'uppercase',
-                        color: order.status === 'delivered' ? 'var(--color-champagne)' : 'var(--color-text-muted)',
-                        borderColor: order.status === 'delivered' ? 'var(--color-champagne)' : 'var(--color-outline-muted)',
-                      }}
+                      className={`status-pill status-pill--${order.status}`}
                     >
                       {order.status.replace(/_/g, ' ')}
                     </span>
-                    <strong style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 400 }}>
+                    <strong className="order-card__id">
                       {order.id}
                     </strong>
                   </div>
-                  <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 400, margin: '8px 0 4px' }}>
+                  <h2 className="order-card__title">
                     Placed on {formattedDate}
                   </h2>
-                  <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-text-muted)' }}>
-                    {itemCount} {itemCount === 1 ? 'piece' : 'pieces'} — Total Paid: <strong>${order.total.toLocaleString()}</strong>
-                  </p>
+                  <div className="order-card__meta">
+                    <p className="order-card__summary">
+                      {itemCount} {itemCount === 1 ? 'piece' : 'pieces'} &mdash; Total Amount: <strong>PKR {order.total.toLocaleString()}</strong>
+                    </p>
+                    {order.status === 'placed' && (
+                      <span className="order-card__review-tag">
+                        Payment Under Review
+                      </span>
+                    )}
+                    {order.status === 'confirmed' && (
+                      <span className="order-card__verified-tag">
+                        Payment Verified &amp; Paid
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <Link className="button button--secondary" to={`/orders/${order.id}`}>
-                    Track Order &rarr;
+                <div className="order-card__action">
+                  <Link className="button button--secondary order-card__track-btn" to={`/orders/${order.id}`}>
+                    Track Order <ArrowRight size={14} aria-hidden="true" />
                   </Link>
                 </div>
               </article>
@@ -81,30 +72,19 @@ export function OrdersPage() {
           })}
         </div>
       ) : (
-        <div
-          className="empty-cart"
-          style={{
-            display: 'flex',
-            minHeight: '360px',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '20px',
-            border: '1px solid var(--color-outline-muted)',
-            marginTop: '48px',
-            textAlign: 'center',
-            padding: '40px',
-          }}
-        >
-          <p className="eyebrow" style={{ margin: 0 }}>Atelier History</p>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '40px', fontWeight: 400, margin: 0 }}>
-            No orders found.
+        <div className="orders-empty-state">
+          <div className="orders-empty-state__icon-wrap">
+            <Package size={32} className="orders-empty-state__icon" aria-hidden="true" />
+          </div>
+          <p className="eyebrow">Atelier History</p>
+          <h2 className="orders-empty-state__title">
+            No orders found
           </h2>
-          <p style={{ margin: '0 0 12px', color: 'var(--color-text-muted)' }}>
+          <p className="orders-empty-state__desc">
             Start building your collection and explore current edits.
           </p>
           <Link className="button button--primary" to="/shop">
-            Explore pieces
+            Explore Pieces <ArrowRight size={14} aria-hidden="true" />
           </Link>
         </div>
       )}

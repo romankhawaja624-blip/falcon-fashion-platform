@@ -1,27 +1,105 @@
+/* FALCON Global Design Tokens — Light Luxury Design Foundation */
+
 :root {
-  --color-deep-ink: #0c0f0e;
-  --color-background: #121413;
-  --color-surface-low: #1a1c1b;
-  --color-surface: #1e201f;
-  --color-surface-high: #282a29;
-  --color-surface-highest: #333534;
-  --color-text: #e2e3e0;
-  --color-text-muted: #cec5b9;
-  --color-outline: #979084;
-  --color-outline-muted: #4b463c;
-  --color-champagne: #f1dfbb;
-  --color-champagne-light: #f3e1bd;
-  --color-intelligent-blue: #2e5bff;
-  --color-error: #e74c3c;
+  /* ===================================================
+     1. FALCON LIGHT LUXURY COLOR SYSTEM
+     =================================================== */
+  /* Level 1 — Canvas (Primary website background: warm ivory / soft editorial neutral) */
+  --color-canvas: #F4F2ED;
+  --color-background: #F4F2ED;
+
+  /* Level 2 — Surface (Cards, collection blocks, UI panels) */
+  --color-surface: #FAF9F6;
+  --color-surface-low: #F6F4EF;
+  --color-background-elevated: #FAF9F6;
+
+  /* Level 3 — Elevated Surface (Dropdowns, menus, floating drawers, contextual modals) */
+  --color-surface-elevated: #FFFFFF;
+  --color-surface-high: #FFFFFF;
+  --color-surface-highest: #EAE8E2;
+
+  /* Typography Colors */
+  --color-text-primary: #171817;        /* Deep charcoal / near black */
+  --color-text: #171817;                /* Backward-compatible primary text */
+  --color-text-secondary: #5E605B;      /* Muted warm gray body/subtitle */
+  --color-text-muted: #6B6B68;          /* Backward-compatible muted text */
+  --color-text-subtle: #8A8C86;         /* Soft caption / metadata gray */
+
+  /* Architectural Border System */
+  --color-border-subtle: #E2E0DA;       /* Subtle neutral border */
+  --color-outline: #E2E0DA;             /* Backward-compatible outline */
+  --color-outline-muted: #ECEAE3;       /* Soft muted border */
+  --color-border-strong: #CFCBC3;       /* Stronger architectural border */
+
+  /* Actions & Accents */
+  --color-accent: #1A1B19;              /* Primary dark charcoal action */
+  --color-deep-ink: #1A1B19;            /* Deep ink charcoal */
+  --color-accent-foreground: #F7F5EF;   /* Warm light action text */
+  --color-champagne: #C2A878;           /* Muted luxury champagne gold */
+  --color-champagne-light: #D4BD90;     /* Soft champagne highlight */
+  --color-intelligent-blue: #3B60E4;    /* Refined intelligence accent */
+  --color-error: #D32F2F;               /* Refined error crimson */
+
+  /* Shadows (Extremely restrained, subtle luxury elevation) */
+  --shadow-subtle: 0 4px 20px rgba(23, 24, 23, 0.04);
+  --shadow-elevated: 0 16px 40px rgba(23, 24, 23, 0.07);
+
+  /* ===================================================
+     2. DARK EDITORIAL INTELLIGENCE SYSTEM
+     =================================================== */
+  --color-dark-bg: #0E0E10;             /* Deep editorial obsidian background */
+  --color-dark-surface-low: #141416;    /* Dark surface low */
+  --color-dark-surface: #18181B;        /* Dark card surface */
+  --color-dark-surface-high: #202024;   /* Dark elevated card surface */
+  --color-dark-text: #FAFAF8;           /* Warm ivory dark text */
+  --color-dark-text-muted: #A8A8B0;     /* Muted dark text */
+  --color-dark-outline: rgba(255, 255, 255, 0.12); /* Subtle dark border */
+  --color-dark-outline-muted: rgba(255, 255, 255, 0.08);
+  --color-obsidian-surface: #121214;
+  --color-obsidian-card: #18181A;
+  --color-obsidian-border: rgba(255, 255, 255, 0.10);
+  --color-obsidian-border-hover: rgba(194, 168, 120, 0.45);
+
+  /* ===================================================
+     3. TYPOGRAPHY & RADIUS SCALE
+     =================================================== */
   --font-display: 'Bodoni Moda', Georgia, serif;
+  --font-heading: var(--font-display);
   --font-body: 'Hanken Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --radius-control: 2px;                 /* Minimal radius for high-fashion editorial feel */
+  --radius-card: 2px;
+
+  /* ===================================================
+     4. CONTROLLED SPACING SCALE
+     =================================================== */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+
   --space-unit: 4px;
   --space-gutter: 24px;
   --space-mobile-margin: 20px;
   --space-desktop-margin: 64px;
   --space-section-gap: 120px;
+  --space-section-gap-sm: 80px;   /* Tighter section rhythm on tablet/mobile */
   --container-max: 1440px;
-  --radius-control: 4px;
+
+  /* Header */
+  --header-height: 80px;          /* Matches public-header__inner height */
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-standard: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 500ms cubic-bezier(0.16, 1, 0.3, 1); /* For image scale hovers */
   --motion-standard: 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }

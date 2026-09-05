@@ -1,17 +1,20 @@
 import { useState, useMemo } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X, SlidersHorizontal, ArrowUpDown, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { products } from '../../data/products';
 import { ProductCard } from '../../components/product/ProductCard';
 
 const categories = ['All', 'Outerwear', 'Tailoring', 'Eveningwear', 'Knitwear', 'Accessories'];
 
+type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'name-asc';
+
 export function ShopPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState<SortOption>('featured');
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => {
+    const list = products.filter((product) => {
       const matchesSearch =
         !searchQuery.trim() ||
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -25,100 +28,183 @@ export function ShopPage() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+
+    return list.sort((a, b) => {
+      if (sortBy === 'price-asc') return a.priceValue - b.priceValue;
+      if (sortBy === 'price-desc') return b.priceValue - a.priceValue;
+      if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+      return 0; // 'featured' retains curated catalog order
+    });
+  }, [searchQuery, selectedCategory, sortBy]);
+
+  const hasActiveFilters = searchQuery.trim() !== '' || selectedCategory !== 'All';
+
+  const handleResetFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('All');
+    setSortBy('featured');
+  };
 
   return (
-    <main className="commerce-page">
-      <section className="commerce-intro container" aria-labelledby="shop-title">
-        <p className="eyebrow">The digital atelier</p>
-        <h1 id="shop-title">The Atelier Shop</h1>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', maxWidth: '600px', margin: '0 0 1.5rem 0' }}>
-          Explore defined silhouettes, architectural tailoring, and rare textile fabrications.
-        </p>
+    <main className="commerce-page shop-page">
+      {/* Editorial Header */}
+      <section className="shop-header container" aria-labelledby="shop-title">
+        <div className="shop-header__inner">
+          <div className="shop-header__meta">
+            <span className="eyebrow">The Digital Atelier</span>
+            <span className="shop-header__edition">Collection Archive / 2026</span>
+          </div>
+          <h1 id="shop-title" className="shop-header__title">
+            The Atelier Catalog
+          </h1>
+          <p className="shop-header__description">
+            Sculptural silhouettes, architectural tailoring, and rare textile fabrications designed with enduring intention.
+          </p>
 
-        <label className="search-field" htmlFor="shop-search" style={{ maxWidth: '540px' }}>
-          <span className="sr-only">Search the atelier</span>
-          <input
-            id="shop-search"
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name, fabric, or category..."
-          />
-          <Search size={19} aria-hidden="true" />
-        </label>
-
-        <div className="category-filter-chips" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '1.5rem 0 1rem 0' }}>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={selectedCategory === cat ? 'button button--primary' : 'button button--secondary'}
-              style={{ fontSize: '12px', padding: '6px 14px', minHeight: '32px', borderRadius: '16px' }}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+          {/* Audience Collection Navigation */}
+          <nav className="shop-audiences" aria-label="Audience collection navigation">
+            <span className="shop-audiences__label">Editions:</span>
+            <div className="shop-audiences__links">
+              <Link to="/collections/women" className="shop-audiences__link">Women</Link>
+              <span className="shop-audiences__sep" aria-hidden="true">/</span>
+              <Link to="/collections/men" className="shop-audiences__link">Men</Link>
+              <span className="shop-audiences__sep" aria-hidden="true">/</span>
+              <Link to="/collections/youngAdults" className="shop-audiences__link">Young Adults</Link>
+              <span className="shop-audiences__sep" aria-hidden="true">/</span>
+              <Link to="/collections/kids" className="shop-audiences__link">Kids</Link>
+              <span className="shop-audiences__sep" aria-hidden="true">/</span>
+              <Link to="/collections/adults" className="shop-audiences__link">Adults</Link>
+            </div>
+          </nav>
         </div>
-
-        <nav className="commerce-categories" aria-label="Audience collection navigation" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '1rem' }}>
-          <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', alignSelf: 'center' }}>
-            Collections:
-          </span>
-          <Link to="/collections/women">Women</Link>
-          <Link to="/collections/men">Men</Link>
-          <Link to="/collections/kids">Kids</Link>
-          <Link to="/collections/youngAdults">Young Adults</Link>
-          <Link to="/collections/adults">Adults</Link>
-        </nav>
       </section>
 
-      <section className="product-section container" aria-labelledby="featured-title">
-        <div className="section-heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2rem' }}>
-          <div>
-            <p className="eyebrow">Selected pieces</p>
-            <h2 id="featured-title">Defined by silhouette</h2>
-          </div>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>
-            {filteredProducts.length} {filteredProducts.length === 1 ? 'piece' : 'pieces'} available
-          </span>
-        </div>
-
-        {filteredProducts.length > 0 ? (
-          <div className="product-grid">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.slug} product={product} />
+      {/* Discovery Toolbar */}
+      <section className="shop-controls container" aria-label="Catalog filters and sorting">
+        <div className="shop-toolbar">
+          {/* Category Chips */}
+          <div className="shop-toolbar__categories" role="group" aria-label="Filter by category">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`filter-chip ${selectedCategory === cat ? 'filter-chip--active' : ''}`}
+                aria-pressed={selectedCategory === cat}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
             ))}
           </div>
-        ) : (
-          <div
-            className="empty-state"
-            style={{
-              padding: '60px 20px',
-              textAlign: 'center',
-              border: '1px solid var(--color-outline-muted)',
-              borderRadius: '8px',
-              margin: '20px 0',
-            }}
-          >
-            <p className="eyebrow">No Silhouettes Found</p>
-            <h3 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.75rem', margin: '8px 0 16px' }}>
-              No pieces match your filter criteria.
-            </h3>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: '24px' }}>
-              Try adjusting your search terms or clearing category filters.
-            </p>
+
+          {/* Search & Sort Actions */}
+          <div className="shop-toolbar__actions">
+            <div className="shop-search-field">
+              <label htmlFor="shop-search" className="sr-only">Search the atelier</label>
+              <input
+                id="shop-search"
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search silhouettes..."
+                className="shop-search-field__input"
+              />
+              {searchQuery ? (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="shop-search-field__clear"
+                  aria-label="Clear search"
+                >
+                  <X size={14} aria-hidden="true" />
+                </button>
+              ) : (
+                <Search size={14} className="shop-search-field__icon" aria-hidden="true" />
+              )}
+            </div>
+
+            <div className="shop-sort-wrap">
+              <label htmlFor="shop-sort" className="sr-only">Sort products</label>
+              <ArrowUpDown size={13} className="shop-sort-icon" aria-hidden="true" />
+              <select
+                id="shop-sort"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="shop-sort-select"
+                aria-label="Sort products by"
+              >
+                <option value="featured">Sort: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Results Bar / Status */}
+        <div className="shop-status-bar">
+          <div className="shop-status-bar__left">
+            <span className="shop-status-bar__count">
+              {filteredProducts.length} {filteredProducts.length === 1 ? 'piece' : 'pieces'} available
+            </span>
+            {selectedCategory !== 'All' && (
+              <span className="shop-status-bar__active-tag">
+                Category: <strong>{selectedCategory}</strong>
+              </span>
+            )}
+            {searchQuery.trim() && (
+              <span className="shop-status-bar__active-tag">
+                Query: &ldquo;{searchQuery}&rdquo;
+              </span>
+            )}
+          </div>
+
+          {hasActiveFilters && (
             <button
               type="button"
-              className="button button--secondary"
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('All');
-              }}
+              onClick={handleResetFilters}
+              className="shop-status-bar__reset-btn"
             >
               Reset Filters
             </button>
+          )}
+        </div>
+      </section>
+
+      {/* Product Grid / Empty State */}
+      <section className="shop-catalog container" aria-label="Product Catalog">
+        {filteredProducts.length > 0 ? (
+          <div className="product-grid">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.slug} product={product} variant="editorial" />
+            ))}
+          </div>
+        ) : (
+          <div className="empty-state">
+            <div className="empty-state__icon-wrap">
+              <SlidersHorizontal size={24} className="empty-state__icon" aria-hidden="true" />
+            </div>
+            <p className="eyebrow">Zero Matches</p>
+            <h2 className="empty-state__title">
+              No pieces match your filter criteria.
+            </h2>
+            <p className="empty-state__description">
+              Try adjusting your search terms, changing the category, or clearing your active filters to view the full atelier catalogue.
+            </p>
+            <div className="empty-state__actions">
+              <button
+                type="button"
+                className="button button--secondary"
+                onClick={handleResetFilters}
+              >
+                Reset All Filters
+              </button>
+              <Link to="/stylist" className="button button--primary">
+                <Sparkles size={14} style={{ marginRight: '8px' }} aria-hidden="true" />
+                Ask AI Stylist
+              </Link>
+            </div>
           </div>
         )}
       </section>

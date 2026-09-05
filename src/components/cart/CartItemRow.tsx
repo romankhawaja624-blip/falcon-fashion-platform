@@ -31,42 +31,55 @@ export function CartItemRow({ item }: { item: CartItem }) {
   };
 
   return (
-    <article className="cart-item" style={{ borderBottom: '1px solid var(--color-outline-muted)', paddingBlock: '24px' }}>
-      <RemoteImage assetId={item.product.imageIds[0]} />
+    <article className="cart-item">
+      <div className="cart-item__image">
+        <RemoteImage assetId={item.product.imageIds[0]} />
+      </div>
       <div className="cart-item__details">
-        <p className="eyebrow" style={{ margin: 0 }}>{item.product.category}</p>
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', fontWeight: 400, margin: '8px 0' }}>
+        <p className="eyebrow">{item.product.category}</p>
+        <h3 className="cart-item__title">
           {item.product.name}
-        </h2>
-        <p style={{ color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', margin: '0 0 16px' }}>
+        </h3>
+        <p className="cart-item__size">
           Size {item.size}
         </p>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="cart-item__controls">
           <div className="quantity-control" aria-label={`Quantity for ${item.product.name}`}>
-            <button type="button" aria-label="Decrease quantity" onClick={handleDecrease}>
-              <Minus size={14} aria-hidden="true" />
+            <button
+              type="button"
+              aria-label="Decrease quantity"
+              onClick={handleDecrease}
+              className="quantity-control__btn"
+            >
+              <Minus size={13} aria-hidden="true" />
             </button>
-            <span aria-live="polite" style={{ fontFamily: 'var(--font-mono)', fontSize: '12px' }}>{item.quantity}</span>
-            <button type="button" aria-label="Increase quantity" onClick={handleIncrease}>
-              <Plus size={14} aria-hidden="true" />
+            <span aria-live="polite" className="quantity-control__val">
+              {item.quantity}
+            </span>
+            <button
+              type="button"
+              aria-label="Increase quantity"
+              onClick={handleIncrease}
+              className="quantity-control__btn"
+            >
+              <Plus size={13} aria-hidden="true" />
             </button>
           </div>
           <button
             type="button"
-            className="text-link"
+            className="cart-item__save-btn"
             onClick={handleMoveToWishlist}
-            style={{ fontSize: '11px', textTransform: 'uppercase', background: 'none', border: 0, padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
           >
-            <Heart size={12} fill={isSaved ? 'var(--color-champagne)' : 'none'} aria-hidden="true" />
-            Save for later
+            <Heart size={12} fill={isSaved ? 'currentColor' : 'none'} aria-hidden="true" />
+            <span>Save for later</span>
           </button>
         </div>
       </div>
-      <strong className="cart-item__price" style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 400 }}>
+      <strong className="cart-item__price">
         ${(item.product.priceValue * item.quantity).toLocaleString()}
       </strong>
       <button
-        className="icon-button cart-item__remove"
+        className="cart-item__remove"
         type="button"
         aria-label={`Remove ${item.product.name}`}
         onClick={() => {
@@ -74,7 +87,7 @@ export function CartItemRow({ item }: { item: CartItem }) {
           showToast(`${item.product.name} removed from bag`, 'info');
         }}
       >
-        <X size={17} aria-hidden="true" />
+        <X size={16} aria-hidden="true" />
       </button>
     </article>
   );

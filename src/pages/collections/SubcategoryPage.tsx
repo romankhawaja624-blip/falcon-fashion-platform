@@ -23,60 +23,59 @@ export const SubcategoryPage: React.FC = () => {
   const categoryName = catNode ? catNode.name : category.replace(/-/g, ' ');
   const subcategoryName = subNode ? subNode.name : subcategory.replace(/-/g, ' ');
 
-  const matchingProducts = products;
+  const subcategoryProducts = products.filter(
+    (p) =>
+      p.name.toLowerCase().includes(subcategoryName.toLowerCase()) ||
+      p.description.toLowerCase().includes(subcategoryName.toLowerCase()) ||
+      p.tags.some((t) => t.toLowerCase().includes(subcategoryName.toLowerCase())) ||
+      p.category.toLowerCase().includes(categoryName.toLowerCase())
+  );
+  const matchingProducts = subcategoryProducts.length > 0 ? subcategoryProducts : products;
 
   return (
-    <div className="subcategory-page container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
+    <div className="subcategory-page container">
       {/* Breadcrumbs */}
-      <nav className="breadcrumbs" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #888)', marginBottom: '1.5rem' }}>
-        <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}>Home</Link>
-        <span style={{ margin: '0 0.5rem' }}>/</span>
-        <Link to={`/collections/${audience}`} style={{ color: 'inherit', textDecoration: 'none', textTransform: 'capitalize' }}>
+      <nav className="breadcrumbs" aria-label="Breadcrumbs">
+        <Link to="/">Home</Link>
+        <span className="breadcrumbs__sep" aria-hidden="true">/</span>
+        <Link to={`/collections/${audience}`} className="breadcrumbs__audience">
           {audience}
         </Link>
-        <span style={{ margin: '0 0.5rem' }}>/</span>
-        <Link to={`/collections/${audience}/${category}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+        <span className="breadcrumbs__sep" aria-hidden="true">/</span>
+        <Link to={`/collections/${audience}/${category}`}>
           {categoryName}
         </Link>
-        <span style={{ margin: '0 0.5rem' }}>/</span>
-        <span style={{ color: 'var(--color-text, #fff)', textTransform: 'capitalize' }}>{subcategoryName}</span>
+        <span className="breadcrumbs__sep" aria-hidden="true">/</span>
+        <span className="breadcrumbs__current">{subcategoryName}</span>
       </nav>
 
       {/* Header */}
-      <div className="subcategory-header" style={{
-        marginBottom: '2.5rem',
-        borderBottom: '1px solid var(--color-outline-muted, rgba(255,255,255,0.08))',
-        paddingBottom: '1.5rem',
-      }}>
-        <span className="eyebrow" style={{ color: 'var(--color-champagne, #d4af37)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.1em' }}>
+      <header className="subcategory-header">
+        <span className="eyebrow">
           {audience} / {categoryName}
         </span>
-        <h1 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '2.25rem', margin: '0.5rem 0 0 0' }}>
+        <h1 className="subcategory-header__title">
           {subcategoryName}
         </h1>
-      </div>
+      </header>
 
       {/* Products Grid */}
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.25rem', margin: 0 }}>
+      <section className="category-products" aria-labelledby="curated-selection-heading">
+        <div className="category-products__header">
+          <h2 id="curated-selection-heading" className="category-products__title">
             Curated Selection
           </h2>
-          <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #888)' }}>
-            {matchingProducts.length} items available
+          <span className="category-products__count">
+            {matchingProducts.length} {matchingProducts.length === 1 ? 'piece' : 'pieces'} available
           </span>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-          gap: '1.5rem',
-        }}>
+        <div className="product-grid">
           {matchingProducts.map((prod) => (
-            <ProductCard key={prod.slug} product={prod} />
+            <ProductCard key={prod.slug} product={prod} variant="editorial" />
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 };

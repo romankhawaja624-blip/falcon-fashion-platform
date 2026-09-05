@@ -2,23 +2,16 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { AiChatPanel } from '../../components/ai/AiChatPanel';
 import { products, type Product } from '../../data/products';
-import { Image } from '../../components/ui/Image';
+import { RemoteImage } from '../../components/ui/RemoteImage';
 import { useCart } from '../../features/cart/CartContext';
 import { useToast } from '../../features/toast/ToastContext';
-import { ShoppingBag, Sparkles, RefreshCw, Trash2, CheckCircle2 } from 'lucide-react';
+import { ShoppingBag, Sparkles, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
 
 const occasionMap: Record<string, string[]> = {
   'Minimal evening': ['Eveningwear', 'Outerwear', 'Tailoring'],
   'Gallery opening': ['Tailoring', 'Outerwear', 'Accessories'],
   'Global travel': ['Knitwear', 'Outerwear', 'Tailoring'],
   'Executive summit': ['Tailoring', 'Outerwear', 'Knitwear'],
-};
-
-const aestheticMap: Record<string, string[]> = {
-  'Structured': ['Tailoring', 'Outerwear'],
-  'Fluid ease': ['Eveningwear', 'Knitwear'],
-  'Avant-garde edge': ['Outerwear', 'Accessories'],
-  'Monochrome': ['Tailoring', 'Eveningwear'],
 };
 
 export function OutfitBuilderPage() {
@@ -79,42 +72,55 @@ export function OutfitBuilderPage() {
   const totalLookValue = compositionPieces.reduce((sum, p) => sum + p.priceValue, 0);
 
   return (
-    <div className="builder-page container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
-      {/* Header */}
-      <header style={{ marginBottom: '2rem', borderBottom: '1px solid var(--color-outline-muted)', paddingBottom: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+    <div className="atelier-page container" style={{ paddingTop: '2.5rem', paddingBottom: '5rem' }}>
+      {/* Editorial Header */}
+      <header className="atelier-page-heading" style={{ marginBottom: '2.5rem', borderBottom: '1px solid var(--color-outline-muted)', paddingBottom: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem', width: '100%' }}>
           <div>
-            <p className="eyebrow" style={{ color: 'var(--color-champagne, #d4af37)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              Falcon Studio
-            </p>
-            <h1 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '2.5rem', margin: '0.25rem 0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <span className="eyebrow" style={{ color: 'var(--color-champagne, #C2A878)', margin: 0 }}>
+                ATELIER STUDIO
+              </span>
+              <span style={{ color: 'var(--color-outline-muted)' }}>/</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>
+                COMPOSITION ENGINE
+              </span>
+            </div>
+            <h1 style={{ fontFamily: 'var(--font-display, "Bodoni Moda", serif)', fontSize: 'clamp(2.2rem, 3.5vw, 3.2rem)', fontWeight: 400, margin: '0.25rem 0', letterSpacing: '-0.02em' }}>
               Outfit Studio & Composition Builder
             </h1>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', margin: 0, maxWidth: '560px', lineHeight: 1.6 }}>
+              Calibrate occasions, silhouettes, and investment thresholds to compose unified looks anchored by signature garments.
+            </p>
           </div>
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            <Link className="button button--secondary" to="/stylist" style={{ fontSize: '0.85rem' }}>
-              Consult AI Stylist &rarr;
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <Link className="button button--secondary" to="/stylist" style={{ display: 'inline-flex', gap: '8px', alignItems: 'center', fontSize: '0.85rem' }}>
+              <MessageSquare size={14} /> Consult AI Stylist
             </Link>
           </div>
         </div>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 340px) 1fr', gap: '2.5rem', alignItems: 'start' }}>
         {/* Controls Sidebar */}
-        <aside className="builder-controls" style={{ background: 'var(--color-surface, #141416)', border: '1px solid var(--color-outline-muted)', padding: '1.75rem', borderRadius: '8px', height: 'fit-content' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.35rem', marginBottom: '1.25rem' }}>
+        <aside className="builder-controls" style={{ background: 'var(--color-surface-low, #141416)', border: '1px solid var(--color-outline-muted)', padding: '2rem', borderRadius: '4px', height: 'fit-content' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.25rem' }}>
+            <Sparkles size={16} style={{ color: 'var(--color-champagne, #C2A878)' }} />
+            <p className="eyebrow" style={{ margin: 0 }}>PARAMETERS</p>
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-display, "Bodoni Moda", serif)', fontSize: '1.4rem', fontWeight: 400, margin: '0 0 1.5rem 0' }}>
             Composition Controls
           </h2>
 
-          <div style={{ display: 'grid', gap: '1.25rem' }}>
+          <div style={{ display: 'grid', gap: '1.5rem' }}>
             <label style={{ display: 'block' }}>
-              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.5rem' }}>
                 Occasion Context
               </span>
               <select
                 value={occasion}
                 onChange={(e) => setOccasion(e.target.value)}
-                style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }}
+                style={{ width: '100%', padding: '0.85rem', background: 'var(--color-surface-high, #1a1a1e)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '2px', fontFamily: 'inherit', fontSize: '0.9rem' }}
               >
                 <option value="Minimal evening">Minimal Evening</option>
                 <option value="Gallery opening">Gallery Opening</option>
@@ -124,25 +130,25 @@ export function OutfitBuilderPage() {
             </label>
 
             <label style={{ display: 'block' }}>
-              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.5rem' }}>
                 Aesthetic Direction
               </span>
               <select
                 value={aesthetic}
                 onChange={(e) => setAesthetic(e.target.value)}
-                style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }}
+                style={{ width: '100%', padding: '0.85rem', background: 'var(--color-surface-high, #1a1a1e)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '2px', fontFamily: 'inherit', fontSize: '0.9rem' }}
               >
                 <option value="Structured">Structured Architecture</option>
                 <option value="Fluid ease">Fluid Ease</option>
                 <option value="Avant-garde edge">Avant-Garde Edge</option>
-                <option value="Monochrome">Monochrome</option>
+                <option value="Monochrome">Monochrome Edit</option>
               </select>
             </label>
 
             <label style={{ display: 'block' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.5rem' }}>
                 <span>Investment Cap</span>
-                <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-champagne)' }}>${Math.round((investment / 100) * 3000).toLocaleString()}</span>
+                <span style={{ color: 'var(--color-champagne, #C2A878)' }}>${Math.round((investment / 100) * 3000).toLocaleString()}</span>
               </div>
               <input
                 type="range"
@@ -150,18 +156,18 @@ export function OutfitBuilderPage() {
                 max={100}
                 value={investment}
                 onChange={(e) => setInvestment(parseInt(e.target.value, 10))}
-                style={{ width: '100%' }}
+                style={{ width: '100%', accentColor: 'var(--color-champagne, #C2A878)' }}
               />
             </label>
 
             <label style={{ display: 'block' }}>
-              <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '0.5rem' }}>
                 Anchor Piece
               </span>
               <select
                 value={anchorSlug}
                 onChange={(e) => setAnchorSlug(e.target.value)}
-                style={{ width: '100%', padding: '0.75rem', background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '4px' }}
+                style={{ width: '100%', padding: '0.85rem', background: 'var(--color-surface-high, #1a1a1e)', border: '1px solid var(--color-outline-muted)', color: '#fff', borderRadius: '2px', fontFamily: 'inherit', fontSize: '0.9rem' }}
               >
                 {products.map((p) => (
                   <option key={p.slug} value={p.slug}>
@@ -172,7 +178,7 @@ export function OutfitBuilderPage() {
             </label>
           </div>
 
-          <div style={{ display: 'grid', gap: '0.75rem', marginTop: '2rem' }}>
+          <div style={{ display: 'grid', gap: '0.85rem', marginTop: '2.5rem' }}>
             <button
               className="button button--primary"
               onClick={handleAddLookToBag}
@@ -195,51 +201,53 @@ export function OutfitBuilderPage() {
         </aside>
 
         {/* Canvas & Interactive Look Display */}
-        <section className="look-canvas" style={{ display: 'grid', gap: '2rem' }}>
-          <div className="look-canvas__heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '1px solid var(--color-outline-muted)', paddingBottom: '1rem' }}>
+        <section className="look-canvas-section" style={{ display: 'grid', gap: '2.5rem' }}>
+          <div className="look-canvas__heading" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '1px solid var(--color-outline-muted)', paddingBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <p className="eyebrow" style={{ color: 'var(--color-champagne)', textTransform: 'uppercase' }}>
-                Curated Composition / {compositionPieces.length} Pieces
+              <p className="eyebrow" style={{ color: 'var(--color-champagne, #C2A878)', margin: '0 0 0.25rem 0' }}>
+                CURATED COMPOSITION / {compositionPieces.length} PIECES
               </p>
-              <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.75rem', margin: 0 }}>
+              <h2 style={{ fontFamily: 'var(--font-display, "Bodoni Moda", serif)', fontSize: '2rem', fontWeight: 400, margin: 0 }}>
                 {occasion} — {aesthetic}
               </h2>
             </div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-              Total: ${totalLookValue.toLocaleString()}
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', color: 'var(--color-champagne, #C2A878)' }}>
+              Total Value: ${totalLookValue.toLocaleString()}
             </span>
           </div>
 
           {/* Look Pieces Grid */}
-          <div className="look-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
+          <div className="look-grid-refined" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
             {compositionPieces.map((prod, index) => (
               <div
                 key={prod.slug}
-                className="look-piece"
+                className="look-piece-card"
                 style={{
-                  background: 'var(--color-surface, #141416)',
-                  border: '1px solid var(--color-outline-muted)',
-                  borderRadius: '8px',
-                  padding: '1rem',
+                  background: 'var(--color-surface-low, #141416)',
+                  border: index === 0 ? '1px solid var(--color-champagne, #C2A878)' : '1px solid var(--color-outline-muted)',
+                  borderRadius: '4px',
+                  padding: '1.25rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   position: 'relative',
                 }}
               >
-                <div style={{ position: 'relative', width: '100%', paddingTop: '120%', borderRadius: '4px', overflow: 'hidden', marginBottom: '1rem', background: '#1a1a1e' }}>
-                  <Image imageKey={prod.category.toLowerCase() + 'Category'} alt={prod.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ position: 'relative', width: '100%', paddingTop: '120%', borderRadius: '2px', overflow: 'hidden', marginBottom: '1.25rem', background: '#1a1a1e' }}>
+                  <div style={{ position: 'absolute', inset: 0 }}>
+                    <RemoteImage assetId={prod.imageIds[0]} alt={prod.name} />
+                  </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: index === 0 ? 'var(--color-champagne)' : 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>
-                    {index === 0 ? 'Anchor Piece' : `Complementary ${prod.category}`}
+                  <span style={{ fontSize: '10px', textTransform: 'uppercase', color: index === 0 ? 'var(--color-champagne, #C2A878)' : 'var(--color-text-muted)', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em', display: 'block', marginBottom: '4px' }}>
+                    {index === 0 ? 'Anchor Silhouette' : `Complementary ${prod.category}`}
                   </span>
-                  <h3 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '1.1rem', margin: '0.25rem 0 0.5rem 0' }}>
+                  <h3 style={{ fontFamily: 'var(--font-display, "Bodoni Moda", serif)', fontSize: '1.15rem', fontWeight: 400, margin: '0.25rem 0 0.5rem 0' }}>
                     <Link to={`/product/${prod.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>
                       {prod.name}
                     </Link>
                   </h3>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', margin: 0 }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', margin: 0, color: 'var(--color-text-muted)' }}>
                     {prod.price}
                   </p>
                 </div>
@@ -247,7 +255,7 @@ export function OutfitBuilderPage() {
             ))}
           </div>
 
-          {/* AI Composer Assistant Panel */}
+          {/* Embedded AI Composer Assistant Panel */}
           <div style={{ marginTop: '1rem' }}>
             <AiChatPanel builder />
           </div>

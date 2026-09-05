@@ -72,44 +72,48 @@ export function CheckoutPage() {
     <main className="checkout-page">
       <header className="checkout-header container">
         <Link className="wordmark" to="/">Falcon</Link>
-        <span className="secure-label">Secure checkout</span>
+        <div className="checkout-header__badge">
+          <span className="secure-label">Encrypted 256-Bit Checkout</span>
+        </div>
       </header>
       <div className="checkout-layout container">
         <div className="checkout-main">
           <CheckoutProgress current={routeStep} />
           {routeStep === 'shipping' && (
-            <section>
+            <section className="checkout-step-section">
               <p className="eyebrow">01 / Delivery</p>
-              <h1>Shipping information</h1>
+              <h1 className="checkout-step-section__title">Shipping information</h1>
               <ShippingForm />
             </section>
           )}
           {routeStep === 'payment' && (
-            <section>
+            <section className="checkout-step-section">
               <p className="eyebrow">02 / Payment</p>
-              <h1>Payment information</h1>
+              <h1 className="checkout-step-section__title">Payment information</h1>
               <PaymentForm />
             </section>
           )}
           {routeStep === 'review' && (
-            <section>
+            <section className="checkout-step-section">
               <p className="eyebrow">03 / Confirmation</p>
-              <h1>Review your order</h1>
-              <div className="review-panel" style={{ background: 'var(--color-surface-low)', border: '1px solid var(--color-outline-muted)', padding: '24px' }}>
-                <p style={{ margin: '0 0 16px', lineHeight: '24px' }}>
+              <h1 className="checkout-step-section__title">Review your order</h1>
+              <div className="review-panel">
+                <p className="review-panel__destination">
                   Shipping to <strong>{shipping.firstName} {shipping.lastName}</strong> at {shipping.address}, {shipping.city}, {shipping.postalCode}.
                 </p>
-                <p style={{ margin: '0 0 24px', color: 'var(--color-text-muted)', lineHeight: '24px' }}>
+                <p className="review-panel__note">
                   Your payment method has been securely prepared. Click below to place your order.
                 </p>
-                <Button onClick={submitOrder} disabled={isSubmitting} style={{ width: '100%' }}>
-                  {isSubmitting ? 'Placing order...' : 'Place order'}
+                <Button onClick={submitOrder} disabled={isSubmitting} className="review-panel__submit-btn">
+                  {isSubmitting ? 'Placing commission...' : 'Place Order'}
                 </Button>
               </div>
             </section>
           )}
         </div>
-        <OrderSummary compact />
+        <aside className="checkout-aside">
+          <OrderSummary compact />
+        </aside>
       </div>
     </main>
   );

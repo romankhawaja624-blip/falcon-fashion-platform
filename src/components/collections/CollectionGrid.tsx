@@ -8,18 +8,9 @@ interface CollectionGridProps {
 
 export const CollectionGrid: React.FC<CollectionGridProps> = ({
   children,
-  gap = '1.5rem',
 }) => {
   return (
-    <div
-      className="collection-grid"
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-        gap: gap,
-        width: '100%',
-      }}
-    >
+    <div className="collection-grid">
       {children}
     </div>
   );

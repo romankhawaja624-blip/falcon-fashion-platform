@@ -5,7 +5,7 @@ import { useCart } from '../../features/cart/CartContext';
 import { Button } from '../../components/ui/Button';
 import { ProductRail } from '../../components/product/ProductRail';
 import { products } from '../../data/products';
-import { Truck } from 'lucide-react';
+import { Truck, ArrowRight, ShoppingBag } from 'lucide-react';
 
 const FREE_DELIVERY_THRESHOLD = 1000;
 
@@ -20,13 +20,13 @@ export function CartPage() {
   const progressPercent = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
 
   return (
-    <main className="flow-page cart-page container" aria-labelledby="cart-title" style={{ paddingBlock: '120px 80px' }}>
+    <main className="flow-page cart-page container" aria-labelledby="cart-title">
       <div className="flow-heading">
-        <p className="eyebrow">Your atelier</p>
-        <h1 id="cart-title" style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontWeight: 300, fontSize: 'clamp(40px, 5vw, 64px)', margin: '0 0 16px', lineHeight: 1 }}>
-          Your cart
+        <p className="eyebrow">Your Atelier Bag</p>
+        <h1 id="cart-title" className="cart-page__title">
+          Your bag
         </h1>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '18px', maxWidth: '520px', margin: 0 }}>
+        <p className="cart-page__subtitle">
           {itemCount > 0
             ? `${itemCount} ${itemCount === 1 ? 'piece' : 'pieces'} held for your consideration.`
             : 'Pieces held for your consideration.'}
@@ -35,45 +35,44 @@ export function CartPage() {
 
       {items.length > 0 ? (
         <>
-          {/* Free Delivery Bar */}
-          <div style={{
-            background: 'var(--color-surface, #141416)',
-            border: '1px solid var(--color-outline-muted, rgba(255,255,255,0.08))',
-            borderRadius: '8px',
-            padding: '1rem 1.5rem',
-            margin: '2rem 0 1rem 0',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-              <Truck size={18} style={{ color: 'var(--color-champagne, #d4af37)' }} />
-              <span style={{ fontSize: '0.9rem', color: 'var(--color-text, #fff)' }}>
+          {/* Free Delivery Progression Bar */}
+          <div className="delivery-threshold-bar">
+            <div className="delivery-threshold-bar__message">
+              <Truck size={17} className="delivery-threshold-bar__icon" aria-hidden="true" />
+              <span>
                 {amountToFreeDelivery > 0
                   ? `Add $${amountToFreeDelivery.toLocaleString()} more to qualify for complimentary express delivery.`
-                  : 'You have unlocked complimentary global express delivery!'}
+                  : 'You have unlocked complimentary global express delivery.'}
               </span>
             </div>
-            <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-              <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--color-champagne, #d4af37)', transition: 'width 0.3s ease' }} />
+            <div className="delivery-threshold-bar__track" aria-hidden="true">
+              <div
+                className="delivery-threshold-bar__progress"
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
           </div>
 
-          <div className="cart-layout" style={{ marginTop: '2rem' }}>
+          <div className="cart-layout">
             <section className="cart-items" aria-label="Cart items">
-              {items.map((item) => (
-                <CartItemRow item={item} key={item.id} />
-              ))}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
-                <Button variant="secondary" onClick={clear} style={{ fontSize: '12px', minHeight: '40px' }}>
-                  Clear cart
+              <div className="cart-items__list">
+                {items.map((item) => (
+                  <CartItemRow item={item} key={item.id} />
+                ))}
+              </div>
+              <div className="cart-items__footer">
+                <Button variant="secondary" onClick={clear} className="cart-items__clear-btn">
+                  Clear Bag
                 </Button>
               </div>
             </section>
 
-            <div className="cart-summary">
+            <aside className="cart-summary" aria-label="Order summary">
               <OrderSummary />
-              <Link className="button button--primary" to="/checkout" style={{ width: '100%', marginTop: '16px', textAlign: 'center', display: 'block' }}>
-                Proceed to secure checkout &rarr;
+              <Link className="button button--primary cart-summary__checkout-btn" to="/checkout">
+                Proceed to Checkout <ArrowRight size={14} aria-hidden="true" />
               </Link>
-            </div>
+            </aside>
           </div>
 
           <ProductRail
@@ -83,31 +82,17 @@ export function CartPage() {
           />
         </>
       ) : (
-        <div
-          className="empty-cart"
-          style={{
-            display: 'flex',
-            minHeight: '360px',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '20px',
-            border: '1px solid var(--color-outline-muted)',
-            marginTop: '48px',
-            textAlign: 'center',
-            padding: '40px',
-            borderRadius: '8px',
-          }}
-        >
-          <p className="eyebrow" style={{ margin: 0 }}>Nothing Selected</p>
-          <h2 style={{ fontFamily: 'var(--font-heading, "Bodoni Moda", serif)', fontSize: '36px', fontWeight: 400, margin: 0 }}>
-            Your shopping cart is empty.
-          </h2>
-          <p style={{ margin: '0 0 12px', color: 'var(--color-text-muted)' }}>
-            Return to the atelier catalog when a piece speaks to you.
+        <div className="empty-cart-state">
+          <div className="empty-cart-state__icon-wrap">
+            <ShoppingBag size={32} className="empty-cart-state__icon" aria-hidden="true" />
+          </div>
+          <p className="eyebrow">Atelier Wardrobe</p>
+          <h2 className="empty-cart-state__title">Your shopping bag is empty</h2>
+          <p className="empty-cart-state__desc">
+            Explore our curated collections, archival pieces, and seasonal drops to begin composing your personal silhouette.
           </p>
           <Link className="button button--primary" to="/shop">
-            Explore the shop
+            Explore The Collection <ArrowRight size={14} aria-hidden="true" />
           </Link>
         </div>
       )}

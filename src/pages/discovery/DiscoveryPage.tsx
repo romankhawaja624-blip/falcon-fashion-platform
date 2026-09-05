@@ -43,7 +43,7 @@ export function DiscoveryPage() {
           <h2 id="discover-edits-title">A wardrobe in motion.</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px', width: '100%', marginBottom: '24px' }}>
+        <div className="discovery-tiles-grid">
           {visibleTiles.map((tile) => (
             <Link key={tile.to} className={`discovery-tile ${tile.className}`} to={tile.to}>
               <span>{tile.label}</span>
